@@ -1,0 +1,21 @@
+# 测试和调试文件
+tt.*
+.tests
+doc/tags
+debug
+.repro
+foo.*
+*.log
+data
+
+# LazyVim 生成的文件
+lazyvim.json
+
+# 插件缓存和自动生成的文件
+plugin/
+
+# Claude Code 相关
+.claude/
+
+# 可选：如果你想让每台电脑使用最新版本的插件，取消注释下面这行
+# lazy-lock.json
