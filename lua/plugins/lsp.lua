@@ -17,7 +17,7 @@ return {
 
   -- 配置 Mason 自动安装 LSP 服务器和工具
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = {
       ensure_installed = {
         "omnisharp",    -- C# LSP 服务器
