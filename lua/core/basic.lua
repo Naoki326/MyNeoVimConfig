@@ -9,3 +9,6 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 0
 
 vim.opt.autoread = true
+
+vim.opt.splitbelow = true
+vim.opt.splitright = true
