@@ -65,3 +65,6 @@ vim.diagnostic.config({
     prefix = "●",
   },
 })
+
+-- 禁用 smartindent，避免额外的缩进问题
+vim.opt.smartindent = false
