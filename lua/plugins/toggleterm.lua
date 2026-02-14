@@ -7,6 +7,7 @@ return {
             size = 20,
             open_mapping = [[<c-\>]], -- 设置打开/关闭终端的快捷键，如 Ctrl+\
             direction = 'float', -- 'vertical' | 'horizontal' | 'float'
+            shell = 'pwsh', -- 使用 PowerShell 7
         })
     end
 }
