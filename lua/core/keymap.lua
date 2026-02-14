@@ -9,3 +9,5 @@ map({ "n" }, "<C-j>", "<C-w>j<CR>", { silent = true })
 map({ "n" }, "<C-k>", "<C-w>k<CR>", { silent = true })
 map({ "n" }, "<C-l>", "<C-w>l<CR>", { silent = true })
 
+map({ "c" }, "<C-p>", "<C-R>0", { noremap = true, silent = true })
+map({ "c" }, "<C-v>", "<C-R>+", { noremap = true, silent = true })
