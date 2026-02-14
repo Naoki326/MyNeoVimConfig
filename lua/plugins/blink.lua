@@ -1,5 +1,3 @@
----@diagnostic disable: missing-fields
-
 return {
   {
     "hrsh7th/nvim-cmp",
@@ -25,8 +23,6 @@ return {
     },
     event = { "InsertEnter", "CmdlineEnter" },
 
-    ---@module 'blink.cmp'
-    ---@type blink.cmp.Config
     opts = {
       snippets = {
         preset = "default",
@@ -79,14 +75,23 @@ return {
           },
           ghost_text = { enabled = true },
         },
+        sources = function ()
+            local cmd_type = vim.fn.getcmdtype()
+            if cmd_type == "/" then
+                return { "buffer" }
+            end
+            if cmd_type == ":" then
+                return { "cmdline" }
+            end
+            return {}
+        end
       },
 
       keymap = {
-        preset = "enter",
+        preset = "super-tab",
         ["<C-y>"] = { "select_and_accept" },
       },
     },
-    ---@param opts blink.cmp.Config | { sources: { compat: string[] } }
     config = function(_, opts)
       -- setup compat sources
       local enabled = opts.sources.default

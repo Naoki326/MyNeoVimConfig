@@ -1,6 +1,5 @@
 local lsconfses = {
   ["lua-language-server"] = {
-    --capabilities = capabilities,
     settings = {
       Lua = {
         completion = {
@@ -13,13 +12,10 @@ local lsconfses = {
     },
   },
 --vtsls = {
---  capabilities = capabilities,
 --},
 --html = {
---  capabilities = capabilities,
 --},
 --cssls = {
---  capabilities = capabilities,
 --},
 }
 
@@ -42,6 +38,7 @@ return {
             end
 
             local lsp = require("mason-lspconfig").get_mappings().package_to_lspconfig[name]
+            config.capabilities = require("blink.cmp").get_lsp_capabilities()
             vim.lsp.config(lsp, config)
             vim.lsp.enable(lsp)
         end

@@ -13,6 +13,9 @@ vim.opt.autoread = true
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+
 -- 设置默认 shell 为 PowerShell 7
 vim.o.shell = 'pwsh'
 vim.o.shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;'
