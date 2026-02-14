@@ -1,75 +1,111 @@
+---@diagnostic disable: missing-fields
+
 return {
-  "saghen/blink.cmp",
-  -- 可选：指定版本，推荐使用最新稳定版
-  version = "1.*",
-  -- 核心依赖，提供丰富的代码片段库
-  dependencies = { 'rafamadriz/friendly-snippets' },
-
-  -- opts 是 lazy.nvim 传递配置的标准方式，也是 blink.cmp 推荐的配置入口
-  opts = {
-    -- 1. 键位映射
-    -- 预设: 'default' (类原生), 'super-tab' (类VSCode), 'enter' (回车确认)
-    keymap = { preset = 'super-tab' },
-
-    -- 2. 外观设置
-    appearance = {
-      -- 使用等宽字体图标，避免对齐问题
-      nerd_font_variant = 'mono'
+  {
+    "hrsh7th/nvim-cmp",
+    optional = true,
+    enabled = false,
+  },
+  {
+    "saghen/blink.cmp",
+    version = "*",
+    opts_extend = {
+      "sources.completion.enabled_providers",
+      "sources.compat",
+      "sources.default",
     },
-
-    -- 3. 补全行为
-    completion = {
-      -- 默认自动显示文档窗口，如果觉得干扰可以改为 false
-      documentation = { auto_show = true },
+    dependencies = {
+      "rafamadriz/friendly-snippets",
+      {
+        "saghen/blink.compat",
+        optional = true,
+        opts = {},
+        version = "*",
+      },
     },
+    event = { "InsertEnter", "CmdlineEnter" },
 
-    -- 4. 补全源 (Sources)
-    -- 决定从哪里获取补全建议
-    sources = {
-      -- 默认启用的源，顺序会影响优先级
-      default = { 'lsp', 'path', 'snippets', 'buffer' },
-    },
-
-    -- 5. 模糊匹配引擎 (性能关键)
-    -- 'prefer_rust_with_warning' 会优先使用 Rust 版本，若失败则回退并提示
-    -- 'lua' 则强制使用纯 Lua 版本，无外部依赖
-    fuzzy = { implementation = "prefer_rust_with_warning" },
-
-    -- 🔽 新增：命令行模式专用配置
-    cmdline = {
-      -- 1. 启用命令行补全功能
-      enabled = true,
-
-      -- 2. 设置独立的按键映射（也可以不设置，使用默认）
-      keymap = {
-        preset = 'cmdline',           -- 使用命令行专用预设
-        ['<Tab>'] = { 'show_and_insert_or_accept_single', 'select_next' },
-        ['<C-n>'] = { 'select_next', 'fallback' },  -- 向下选择
-        ['<C-p>'] = { 'select_prev', 'fallback' },  -- 向上选择
-        -- 如果你不喜欢方向键导航补全，可以禁用：
-        -- ['<Right>'] = false,
-        -- ['<Left>'] = false,
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
+    opts = {
+      snippets = {
+        preset = "default",
       },
 
-      -- 3. 补全菜单行为设置（关键！）
+      appearance = {
+        -- set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+        -- adjusts spacing to ensure icons are aligned
+        nerd_font_variant = "mono",
+      },
+
       completion = {
-        menu = {
-          -- ✅ 自动显示补全菜单（默认是 false，必须改为 true）
-          auto_show = true,
+        accept = {
+          -- experimental auto-brackets support
+          auto_brackets = {
+            enabled = true,
+          },
         },
-        -- 可选：设置触发补全的最小字符数，避免单字母误触
-        -- 例如输入 :e 后才开始补全，而不是输入 : 就立即补全
-        keyword = { range = 'full' },  -- 保持默认
+        menu = {
+          draw = {
+            treesitter = { "lsp" },
+          },
+        },
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 200,
+        },
       },
 
-      -- 4. 补全源配置
       sources = {
-        -- 你可以根据需要选择哪些源参与命令行补全
-        -- 'lsp' 源通常对命令模式意义不大，建议只用 'cmdline'
-        default = { 'cmdline' },
-        -- 如果你想在命令行中也能补全路径（如 :e ~/.config/...），可以加上 'path'
-        -- default = { 'cmdline', 'path' },
+        -- adding any nvim-cmp sources here will enable them
+        -- with blink.compat
+        compat = {},
+        default = { "lsp", "path", "snippets", "buffer" },
+      },
+
+      cmdline = {
+        enabled = true,
+        keymap = {
+          preset = "cmdline",
+          ["<Right>"] = false,
+          ["<Left>"] = false,
+        },
+        completion = {
+          list = { selection = { preselect = false } },
+          menu = {
+            auto_show = function(ctx)
+              return vim.fn.getcmdtype() == ":"
+            end,
+          },
+          ghost_text = { enabled = true },
+        },
+      },
+
+      keymap = {
+        preset = "enter",
+        ["<C-y>"] = { "select_and_accept" },
       },
     },
+    ---@param opts blink.cmp.Config | { sources: { compat: string[] } }
+    config = function(_, opts)
+      -- setup compat sources
+      local enabled = opts.sources.default
+      for _, source in ipairs(opts.sources.compat or {}) do
+        opts.sources.providers = opts.sources.providers or {}
+        opts.sources.providers[source] = vim.tbl_deep_extend(
+          "force",
+          { name = source, module = "blink.compat.source" },
+          opts.sources.providers[source] or {}
+        )
+        if type(enabled) == "table" and not vim.tbl_contains(enabled, source) then
+          table.insert(enabled, source)
+        end
+      end
+
+      -- Unset custom prop to pass blink.cmp validation
+      opts.sources.compat = nil
+
+      require("blink.cmp").setup(opts)
+    end,
   },
 }
