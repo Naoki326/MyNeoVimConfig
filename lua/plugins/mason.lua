@@ -11,6 +11,8 @@ local lsconfses = {
       },
     },
   },
+  ["omnisharp"] = {
+  },
 --vtsls = {
 --},
 --html = {
@@ -24,6 +26,7 @@ return {
     event = "VeryLazy",
     dependencies = {
         "neovim/nvim-lspconfig",
+        "j-hui/fidget.nvim",
         "mason-org/mason-lspconfig.nvim",
     },
     opts = {},

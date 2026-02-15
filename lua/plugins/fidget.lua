@@ -2,6 +2,7 @@ return {
   -- LSP 进度显示
   {
     "j-hui/fidget.nvim",
+    event = { "LspAttach" },
     opts = {
       notification = {
         window = {
