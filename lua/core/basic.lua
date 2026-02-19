@@ -25,15 +25,15 @@ vim.o.shellquote = ''
 vim.o.shellxquote = ''
 
 -- 使用 Windows 自带的剪贴板（PowerShell）
-vim.g.clipboard = {
-  name = "WslClipboard",
-  copy = {
-    ["+"] = "pwsh.exe -c [Console]::In.ReadToEnd() | Set-Clipboard",
-    ["*"] = "pwsh.exe -c [Console]::In.ReadToEnd() | Set-Clipboard",
-  },
-  paste = {
-    ["+"] = "pwsh.exe -c Get-Clipboard",
-    ["*"] = "pwsh.exe -c Get-Clipboard",
-  },
-  cache_enabled = 0,
-}
+-- vim.g.clipboard = {
+--   name = "WslClipboard",
+--   copy = {
+--     ["+"] = "pwsh.exe -c [Console]::In.ReadToEnd() | Set-Clipboard",
+--     ["*"] = "pwsh.exe -c [Console]::In.ReadToEnd() | Set-Clipboard",
+--   },
+--   paste = {
+--     ["+"] = "pwsh.exe -c Get-Clipboard",
+--     ["*"] = "pwsh.exe -c Get-Clipboard",
+--   },
+--   cache_enabled = 0,
+-- }
