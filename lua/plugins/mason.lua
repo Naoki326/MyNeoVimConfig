@@ -11,8 +11,6 @@ local lsconfses = {
       },
     },
   },
-  ["omnisharp"] = {
-  },
 --vtsls = {
 --},
 --html = {
@@ -29,7 +27,12 @@ return {
         "j-hui/fidget.nvim",
         "mason-org/mason-lspconfig.nvim",
     },
-    opts = {},
+    opts = {
+        registries = {
+            "github:mason-org/mason-registry",
+            "github:Crashdummyy/mason-registry", -- 包含 roslyn 的自定义 registry
+        },
+    },
     config = function (_, opts)
         require("mason").setup(opts)
         local registry = require("mason-registry")

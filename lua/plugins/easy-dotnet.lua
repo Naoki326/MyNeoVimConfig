@@ -5,7 +5,7 @@ return {
         local dotnet = require("easy-dotnet")
         dotnet.setup({
             lsp = {
-                enable = true,
+                enable = false,
                 roslynator_enable = true,
                 easy_dotnet_analyzer_enable = true,
                 auto_refresh_codelens = true,
