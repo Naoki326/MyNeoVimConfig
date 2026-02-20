@@ -14,8 +14,8 @@
 
 ## 3. 验证
 
-- [ ] 3.1 执行 `:Lazy sync`，确认 `roslyn.nvim` 插件安装成功，mason 自动下载 Roslyn 服务器
-- [ ] 3.2 打开一个 `.cs` 文件，确认 fidget.nvim 显示 Roslyn 服务器启动进度
-- [ ] 3.3 在 `.cs` 文件中触发补全（`i` → 输入几个字母），确认 blink.cmp 显示来自 Roslyn 的补全候选
-- [ ] 3.4 在符号上按 `gd` 跳转到定义，按 `K` 查看悬停文档，确认正常工作
-- [ ] 3.5 在含有 `.sln` 或 `.csproj` 的项目目录中打开 nvim，确认 Roslyn 能正确加载整个项目（引用、跨文件跳转可用）
+- [x] 3.1 执行 `:Lazy sync`，确认 `roslyn.nvim` 插件安装成功，mason 自动下载 Roslyn 服务器
+- [x] 3.2 打开一个 `.cs` 文件，确认 fidget.nvim 显示 Roslyn 服务器启动进度
+- [x] 3.3 在 `.cs` 文件中触发补全（`i` → 输入几个字母），确认 blink.cmp 显示来自 Roslyn 的补全候选
+- [x] 3.4 在符号上按 `gd` 跳转到定义，按 `K` 查看悬停文档，确认正常工作
+- [x] 3.5 在含有 `.sln` 或 `.csproj` 的项目目录中打开 nvim，确认 Roslyn 能正确加载整个项目（引用、跨文件跳转可用）
