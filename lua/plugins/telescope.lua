@@ -24,9 +24,9 @@ return{
         "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>",
         desc = "Switch Buffer",
       },
-      -- { "<leader>/", LazyVim.pick("live_grep"), desc = "Grep (Root Dir)" },
+      -- { "<leader>/", <cmd>Telescope live_grep<cr>, desc = "Grep (Root Dir)" },
       { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "Command History" },
-      -- { "<leader><space>", LazyVim.pick("files"), desc = "Find Files (Root Dir)" },
+      { "<leader><space>", "<cmd>Telescope find_files<cr>", desc = "Find Files (Root Dir)" },
       -- find
       {
         "<leader>fb",
@@ -54,8 +54,25 @@ return{
       { "<leader>sC", "<cmd>Telescope commands<cr>", desc = "Commands" },
       { "<leader>sd", "<cmd>Telescope diagnostics<cr>", desc = "Diagnostics" },
       { "<leader>sD", "<cmd>Telescope diagnostics bufnr=0<cr>", desc = "Buffer Diagnostics" },
-      -- { "<leader>sg", LazyVim.pick("live_grep"), desc = "Grep (Root Dir)" },
-      -- { "<leader>sG", LazyVim.pick("live_grep", { root = false }), desc = "Grep (cwd)" },
+      { "<leader>sg",
+        function()
+            require('telescope.builtin').live_grep({
+                        search_dirs = { },
+                        glob_pattern = { "*.cs", "*.razor", "*.css" },
+                   })
+      end,
+      desc = "Grep (Root Dir)" },
+      {
+        "<leader>sG",
+        function()
+            require('telescope.builtin').live_grep({
+                        search_dirs = { vim.fn.getcwd() },
+                        -- glob_pattern = { "*.cs", "*.razor", "*.css" },
+                    })
+        end,
+        -- { root = false },
+        desc = "Grep (cwd)"
+      },
       { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Help Pages" },
       { "<leader>sH", "<cmd>Telescope highlights<cr>", desc = "Search Highlight Groups" },
       { "<leader>sj", "<cmd>Telescope jumplist<cr>", desc = "Jumplist" },
