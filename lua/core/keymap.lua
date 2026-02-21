@@ -1,4 +1,5 @@
 vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
 
 local map = vim.keymap.set
 map({ "n", "i" }, "<C-z>", "<Cmd>undo<CR>", { silent = true })
@@ -43,6 +44,9 @@ map("i", ";", ";<c-g>u")
 
 -- save file
 map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
+
+-- keywordprg
+map({ "n" }, "<leader>K", "<cmd>norm! K<cr>", { desc = "Keywordprg" })
 
 -- quit
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All" })
