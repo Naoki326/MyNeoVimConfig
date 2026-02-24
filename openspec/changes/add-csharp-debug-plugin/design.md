@@ -73,36 +73,53 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 ---
 
-### D4: DLL 路径检测策略
+### D4: Launch configuration 优先从项目的 `.vscode/launch.json` 加载
 
-**选择**: 三级回退策略：
-1. 用 `cs_solution.lua.find_sln()` 定位 `.sln` 目录
-2. 用 `vim.fn.glob(sln_dir .. "/**/bin/Debug/**/*.dll", false, true)` 展开候选列表
-3. 取第一个匹配项作为 `vim.fn.input()` 默认值，用户可手动修改
+**选择**: 使用 `nvim-dap` 内置的 `dap.ext.vscode.load_launchjs(path, { coreclr = {"cs"} })` 在 `LspAttach` 时加载项目目录下的 `.vscode/launch.json`，以 `cs_solution.find_sln()` 推断项目根目录。
 
 ```lua
-request = function()
-  local sln = require("cs_solution").find_sln()
-  local root = sln and vim.fn.fnamemodify(sln, ":h") or vim.fn.getcwd()
-  local dlls = vim.fn.glob(root .. "/**/bin/Debug/**/*.dll", false, true)
-  local default = #dlls > 0 and dlls[1] or root .. "/bin/Debug/net8.0/App.dll"
-  return vim.fn.input("DLL path: ", default, "file")
+-- 在 LspAttach 回调中（已知 root）：
+local launch_json = root .. "/.vscode/launch.json"
+if vim.fn.filereadable(launch_json) == 1 then
+  require("dap.ext.vscode").load_launchjs(launch_json, { coreclr = { "cs" } })
 end
 ```
 
-**理由**: 自动检测减少用户输入，同时保留手动修正能力，兼容 .NET 6/7/8 等不同 TFM 目录。
+**理由**: launch 配置与项目共存，版本控制友好，团队成员共享同一配置；避免在 Neovim 配置里硬编码各项目路径。`load_launchjs` 支持 `${workspaceFolder}`、`${command:pickProcess}` 等 VSCode 变量的自动解析。
 
-**放弃的方案**: 完全手动输入 → 用户体验差；完全自动选择 → 多项目 solution 时选择不可靠。
+**仅加载 `coreclr` type**: `type: "dotnet"` 和 `type: "chrome"` 的条目会被过滤，不影响 C# 调试配置列表。
+
+**重复加载防护**: 用 `loaded_launch_configs` 表记录已加载路径，同一 JSON 在同次会话中只加载一次（避免多 buffer attach 时重复追加）。
+
+**放弃的方案**: 在 `core/dap.lua` 中硬编码 glob + input → 每个项目路径不同，需频繁修改 Neovim 配置。
 
 ---
 
-### D5: ASP.NET 配置通过独立 launch entry 区分
+### D5: 项目 launch.json 中需包含 `coreclr` type 的 launch 条目
 
-**选择**: 为 `cs` filetype 注册两条独立的 `dap.configurations.cs` 条目：
-- `".NET: Launch Program"` — 通用 Console/Library
-- `".NET: Launch ASP.NET"` — 额外注入 `ASPNETCORE_ENVIRONMENT = "Development"`
+**选择**: 对于使用非标准输出目录的项目（如 weldone 使用 `Output/` 而非 `bin/Debug/`），在项目的 `.vscode/launch.json` 中手动添加 `coreclr` launch 条目，指定准确的 `program` 路径。
 
-**理由**: 两种场景环境变量需求不同，分开声明语义清晰，用户在 `dap.continue()` 时可明确选择。
+```json
+{
+  "name": "C#: 启动 Weldone (nvim-dap)",
+  "type": "coreclr",
+  "request": "launch",
+  "program": "${workspaceFolder}/Output/Weldone.dll",
+  "cwd": "${workspaceFolder}",
+  "stopAtEntry": false,
+  "env": { "ASPNETCORE_ENVIRONMENT": "Development" }
+}
+```
+
+**理由**: 输出目录是项目级配置，写在 `launch.json` 里比在 Neovim 配置里 glob 检测更准确可靠。
+
+---
+
+### D6: 无 launch.json 时回退到 pick_dll 内置配置
+
+**选择**: 若当前项目根目录下不存在 `.vscode/launch.json`，则保留原有的 `dap.configurations.cs` 内置兜底配置（glob 检测 + input 预填充）。
+
+**理由**: 确保在没有 `.vscode/launch.json` 的项目中调试仍可用，不强制要求每个项目都有配置文件。
 
 ---
 
