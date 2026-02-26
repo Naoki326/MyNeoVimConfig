@@ -181,6 +181,19 @@ return{
     end,
   },
 
+  -- 让 vim.ui.select 使用 Telescope UI（roslyn target 选择器等都会走这里）
+  {
+    "nvim-telescope/telescope-ui-select.nvim",
+    config = function()
+      require("telescope").setup({
+        extensions = {
+          ["ui-select"] = require("telescope.themes").get_dropdown(),
+        },
+      })
+      require("telescope").load_extension("ui-select")
+    end,
+  },
+
   -- Flash Telescope config
   {
     "nvim-telescope/telescope.nvim",

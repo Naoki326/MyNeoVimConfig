@@ -25,6 +25,79 @@ local function pick_dll(buf)
   end
 end
 
+-- 交互式修改调试变量值
+-- 以光标下 word 预填充变量名，通过 DAP setVariable 修改当前帧各 scope 中的变量
+local function set_variable(dap)
+  local session = dap.session()
+  if not session then
+    vim.notify("DAP: No active debug session", vim.log.levels.WARN)
+    return
+  end
+  local frame = session.current_frame
+  if not frame then
+    vim.notify("DAP: No current frame", vim.log.levels.WARN)
+    return
+  end
+
+  local cword = vim.fn.expand("<cword>")
+  vim.ui.input({ prompt = "Variable name: ", default = cword }, function(var_name)
+    if not var_name or var_name == "" then return end
+    vim.ui.input({ prompt = var_name .. " = " }, function(new_val)
+      if new_val == nil then return end
+      -- 获取当前帧的所有 scope，逐一尝试 setVariable
+      session:request("scopes", { frameId = frame.id }, function(err, resp)
+        if err or not (resp and resp.scopes) then
+          vim.notify("DAP: Cannot get scopes: " .. tostring(err), vim.log.levels.ERROR)
+          return
+        end
+        local scopes = resp.scopes
+        local function try_scope(i)
+          if i > #scopes then
+            vim.notify("DAP: Variable '" .. var_name .. "' not found in any scope", vim.log.levels.WARN)
+            return
+          end
+          session:request("setVariable", {
+            variablesReference = scopes[i].variablesReference,
+            name               = var_name,
+            value              = new_val,
+          }, function(set_err, _)
+            if set_err then
+              try_scope(i + 1)
+            else
+              vim.notify("DAP: " .. var_name .. " = " .. new_val, vim.log.levels.INFO)
+              pcall(function() require("dapui").open() end)
+            end
+          end)
+        end
+        try_scope(1)
+      end)
+    end)
+  end)
+end
+
+-- 启动 dotnet watch run（进程内热重载）并在 3 秒后弹出 attach 进程选择器
+-- 注意：热重载后调试器 PDB 不同步，已热更新方法内的断点可能偏移
+local function hot_reload(dap, root)
+  vim.cmd("silent! wa")
+  vim.fn.jobstart(
+    { "dotnet", "watch", "run", "--project", root, "--non-interactive" },
+    { detach = true }
+  )
+  vim.notify(
+    "DAP: dotnet watch started. Attaching in 3s...\n" ..
+    "(Breakpoints in hot-reloaded methods may drift — PDB not synced)",
+    vim.log.levels.INFO
+  )
+  vim.defer_fn(function()
+    dap.run({
+      type      = "coreclr",
+      name      = ".NET: Attach to Process",
+      request   = "attach",
+      processId = require("dap.utils").pick_process,
+    })
+  end, 3000)
+end
+
 function M.setup()
   local dap = require("dap")
 
@@ -97,13 +170,30 @@ function M.setup()
         }
       end
 
-      -- 4b. 快捷键（buffer 局部，<leader>d 前缀）
+      -- attach 配置常驻（不依赖 launch.json，始终可用）
+      if not dap.configurations.cs then dap.configurations.cs = {} end
+      local has_attach = false
+      for _, c in ipairs(dap.configurations.cs) do
+        if c.request == "attach" and c.name == ".NET: Attach to Process" then
+          has_attach = true; break
+        end
+      end
+      if not has_attach then
+        table.insert(dap.configurations.cs, {
+          type      = "coreclr",
+          name      = ".NET: Attach to Process",
+          request   = "attach",
+          processId = require("dap.utils").pick_process,
+        })
+      end
+
+      -- 4b. 快捷键（buffer 局部，<leader>d 前缀 + F 键双轨）
       local map = function(lhs, rhs, desc)
         vim.keymap.set("n", lhs, rhs, { buffer = ev.buf, desc = "DAP: " .. desc })
       end
 
-      -- 启动：无活跃会话时用 Telescope 选配置，有会话时直接继续
-      map("<leader>dc", function()
+      -- ── Continue / Pick Config ──────────────────────────────────────────
+      local function continue_or_pick()
         if dap.session() then
           dap.continue()
         elseif ok_tel then
@@ -113,19 +203,49 @@ function M.setup()
         else
           dap.continue()
         end
-      end, "Continue / Pick Config")
+      end
+      map("<leader>dc", continue_or_pick, "Continue / Pick Config")
+      map("<F5>",       continue_or_pick, "Continue / Pick Config")
 
-      map("<leader>do", dap.step_over,                                       "Step Over")
-      map("<leader>di", dap.step_into,                                       "Step Into")
-      map("<leader>dO", dap.step_out,                                        "Step Out")
-      map("<leader>db", dap.toggle_breakpoint,                               "Toggle Breakpoint")
+      -- ── Step ───────────────────────────────────────────────────────────
+      map("<leader>do", dap.step_over, "Step Over")
+      map("<F10>",      dap.step_over, "Step Over")
+
+      map("<leader>di", dap.step_into, "Step Into")
+      map("<F11>",      dap.step_into, "Step Into")
+
+      map("<leader>dO", dap.step_out,  "Step Out")
+      map("<S-F11>",    dap.step_out,  "Step Out")
+
+      -- ── Breakpoint ─────────────────────────────────────────────────────
+      map("<leader>db", dap.toggle_breakpoint, "Toggle Breakpoint")
+      map("<F9>",       dap.toggle_breakpoint, "Toggle Breakpoint")
+
       map("<leader>dB", function()
         dap.set_breakpoint(vim.fn.input("Condition: "))
-      end,                                                                   "Conditional Breakpoint")
-      map("<leader>dr", dap.repl.open,                                       "Open REPL")
-      map("<leader>du", function() require("dapui").toggle() end,            "Toggle UI")
+      end, "Conditional Breakpoint")
 
-      -- Telescope 扩展快捷键
+      -- ── Terminate ──────────────────────────────────────────────────────
+      map("<leader>dq", function()
+        dap.terminate()
+        if ok_ui then dapui.close() end
+      end, "Terminate")
+      map("<S-F5>", function()
+        dap.terminate()
+        if ok_ui then dapui.close() end
+      end, "Terminate")
+
+      -- ── Set Variable ───────────────────────────────────────────────────
+      map("<leader>dE", function() set_variable(dap) end, "Set Variable")
+
+      -- ── Hot Reload (dotnet watch + attach) ─────────────────────────────
+      map("<leader>dh", function() hot_reload(dap, root) end, "Hot Reload (dotnet watch)")
+
+      -- ── REPL / UI ──────────────────────────────────────────────────────
+      map("<leader>dr", dap.repl.open,                            "Open REPL")
+      map("<leader>du", function() require("dapui").toggle() end, "Toggle UI")
+
+      -- ── Telescope 扩展快捷键 ───────────────────────────────────────────
       if ok_tel then
         local ext = require("telescope").extensions.dap
         map("<leader>dl", ext.list_breakpoints, "List Breakpoints")
