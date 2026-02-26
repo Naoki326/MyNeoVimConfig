@@ -16,14 +16,14 @@ vim.opt.splitright = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
--- 设置编码为 UTF-8
+-- 设置编码为 utf-8
 vim.o.encoding = 'utf-8'
 vim.o.fileencoding = 'utf-8'
 
--- 自动识别文件编码，兼容中文(GBK, GB18030)
+-- 自动识别文件编码，兼容中文(gbk, gb18030)
 vim.o.fileencodings = 'utf-8,gbk,gb18030,gb2312,latin1'
 
--- 设置默认 shell 为 PowerShell 7
+-- 设置默认 shell 为 powershell 7
 vim.o.shell = 'pwsh'
 vim.o.shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;'
 vim.o.shellredir = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
