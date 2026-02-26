@@ -103,19 +103,33 @@ function M.setup()
 
   -- ── 1. coreclr 适配器 ────────────────────────────────────────────────────
   local ok, settings = pcall(require, "mason.settings")
-  if ok then
-    local root = settings.current.install_root_dir
-    local exe  = vim.fn.has("win32") == 1 and "netcoredbg.exe" or "netcoredbg"
-    local cmd  = root .. "/packages/netcoredbg/netcoredbg/" .. exe
+  -- if ok then
+  --   local root = settings.current.install_root_dir
+  --   local exe  = vim.fn.has("win32") == 1 and "netcoredbg.exe" or "netcoredbg"
+  --   local cmd  = root .. "/packages/netcoredbg/netcoredbg/" .. exe
+  --
+  --   dap.adapters.coreclr = {
+  --     type = "executable",
+  --     command = cmd,
+  --     args = { "--interpreter=vscode" },
+  --   }
+  --
+  --   if vim.fn.executable(cmd) == 0 then
+  --     vim.notify("DAP: netcoredbg not found. Run :MasonInstall netcoredbg", vim.log.levels.WARN)
+  --   end
+  -- end
+  local sharpdbg= require("lazy.core.config").plugins["sharpdbg"]
+  if sharpdbg ~= nil then
+    local dbgDir = sharpdbg.dir
+    local cmd = dbgDir .. [[\artifacts\bin]] .. "SharpDbg.Cli.dll"
 
     dap.adapters.coreclr = {
-      type = "executable",
-      command = cmd,
-      args = { "--interpreter=vscode" },
+        type = "executable",
+        command = cmd,
+        args = { "--interpreter=vscode" }
     }
-
     if vim.fn.executable(cmd) == 0 then
-      vim.notify("DAP: netcoredbg not found. Run :MasonInstall netcoredbg", vim.log.levels.WARN)
+      vim.notify("DAP: sharpdbg not found.", vim.log.levels.WARN)
     end
   end
 
@@ -204,6 +218,13 @@ function M.setup()
           dap.continue()
         end
       end
+
+      -- 4b. 快捷键（buffer 局部，<leader>d 前缀）
+      local map = function(lhs, rhs, desc)
+        vim.keymap.set("n", lhs, rhs, { buffer = ev.buf, desc = "DAP: " .. desc })
+      end
+
+      -- 启动：无活跃会话时用 Telescope 选配置，有会话时直接继续
       map("<leader>dc", continue_or_pick, "Continue / Pick Config")
       map("<F5>",       continue_or_pick, "Continue / Pick Config")
 

@@ -11,8 +11,10 @@ return {
         capabilities = require("blink.cmp").get_lsp_capabilities(),
       },
     })
-
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    -- LSP 服务器设置（与 roslyn 插件配置分开）
     vim.lsp.config("roslyn", {
+      capabilities = capabilities,
       settings = {
         ["csharp|background_analysis"] = {
           dotnet_analyzer_diagnostics_scope = "fullSolution",
