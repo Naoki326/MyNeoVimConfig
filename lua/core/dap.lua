@@ -121,7 +121,7 @@ function M.setup()
   local sharpdbg= require("lazy.core.config").plugins["sharpdbg"]
   if sharpdbg ~= nil then
     local dbgDir = sharpdbg.dir
-    local cmd = dbgDir .. [[\artifacts\bin]] .. "SharpDbg.Cli.dll"
+    local cmd = dbgDir .. [[/artifacts/bin/SharpDbg.Cli/Debug/]] .. "SharpDbg.Cli.exe"
 
     dap.adapters.coreclr = {
         type = "executable",
@@ -129,7 +129,7 @@ function M.setup()
         args = { "--interpreter=vscode" }
     }
     if vim.fn.executable(cmd) == 0 then
-      vim.notify("DAP: sharpdbg not found.", vim.log.levels.WARN)
+      vim.notify("DAP: sharpdbg not found in ." .. cmd, vim.log.levels.WARN)
     end
   end
 
