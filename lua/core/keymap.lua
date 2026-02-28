@@ -3,7 +3,7 @@ vim.g.maplocalleader = "\\"
 
 local map = vim.keymap.set
 map({ "n", "i" }, "<C-z>", "<Cmd>undo<CR>", { silent = true })
-map({ "n", "i" }, "<C-r>", "<Cmd>redo<CR>", { silent = true })
+map({ "n", "i" }, "<C-S-z>", "<Cmd>redo<CR>", { silent = true })
 
 -- Move to window using the <ctrl> hjkl keys
 map("n", "<C-h>", "<C-w>h", { desc = "Go to Left Window", remap = true })

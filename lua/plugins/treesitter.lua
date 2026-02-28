@@ -17,6 +17,7 @@ return {
             },
             highlight = { enable = true },
             indent = { enable = true },
+            fold = { enable = true },
         })
     end,
 }

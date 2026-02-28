@@ -103,35 +103,36 @@ function M.setup()
 
   -- ── 1. coreclr 适配器 ────────────────────────────────────────────────────
   local ok, settings = pcall(require, "mason.settings")
-  -- if ok then
-  --   local root = settings.current.install_root_dir
-  --   local exe  = vim.fn.has("win32") == 1 and "netcoredbg.exe" or "netcoredbg"
-  --   local cmd  = root .. "/packages/netcoredbg/netcoredbg/" .. exe
-  --
-  --   dap.adapters.coreclr = {
-  --     type = "executable",
-  --     command = cmd,
-  --     args = { "--interpreter=vscode" },
-  --   }
-  --
-  --   if vim.fn.executable(cmd) == 0 then
-  --     vim.notify("DAP: netcoredbg not found. Run :MasonInstall netcoredbg", vim.log.levels.WARN)
-  --   end
-  -- end
-  local sharpdbg= require("lazy.core.config").plugins["sharpdbg"]
-  if sharpdbg ~= nil then
-    local dbgDir = sharpdbg.dir
-    local cmd = dbgDir .. [[/artifacts/bin/SharpDbg.Cli/Debug/]] .. "SharpDbg.Cli.exe"
+  if ok then
+    local root = settings.current.install_root_dir
+    local exe  = vim.fn.has("win32") == 1 and "netcoredbg.exe" or "netcoredbg"
+    local cmd  = root .. "/packages/netcoredbg/netcoredbg/" .. exe
 
     dap.adapters.coreclr = {
-        type = "executable",
-        command = cmd,
-        args = { "--interpreter=vscode" }
+      type = "executable",
+      command = cmd,
+      args = { "--interpreter=vscode" },
     }
+
     if vim.fn.executable(cmd) == 0 then
-      vim.notify("DAP: sharpdbg not found in ." .. cmd, vim.log.levels.WARN)
+      vim.notify("DAP: netcoredbg not found. Run :MasonInstall netcoredbg", vim.log.levels.WARN)
     end
   end
+  -- local sharpdbg= require("lazy.core.config").plugins["sharpdbg"]
+  -- if sharpdbg ~= nil then
+  --   local dbgDir = sharpdbg.dir
+  --   local cmd = dbgDir .. [[/artifacts/bin/SharpDbg.Cli/Debug/]] .. "SharpDbg.Cli.exe"
+  --   cmd = cmd:gsub("/", "\\")
+  --
+  --   dap.adapters.coreclr = {
+  --       type = "executable",
+  --       command = cmd,
+  --       args = { "--interpreter=vscode" }
+  --   }
+  --   if vim.fn.executable(cmd) == 0 then
+  --     vim.notify("DAP: sharpdbg not found in ." .. cmd, vim.log.levels.WARN)
+  --   end
+  -- end
 
   -- ── 2. dap-ui ────────────────────────────────────────────────────────────
   local ok_ui, dapui = pcall(require, "dapui")
