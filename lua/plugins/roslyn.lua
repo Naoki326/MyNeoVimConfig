@@ -7,6 +7,13 @@ return {
   config = function()
     require("roslyn").setup({
       lock_target = true, -- 记住上次 :Roslyn target 选择的 .sln，避免每次弹窗
+      choose_target = function(targets)
+        -- 多个 sln 时自动弹出选择菜单
+        vim.schedule(function()
+          vim.cmd("Roslyn target")
+        end)
+        return nil
+      end,
       config = {
         capabilities = require("blink.cmp").get_lsp_capabilities(),
       },
