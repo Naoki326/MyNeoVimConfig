@@ -4,18 +4,9 @@ return {
   dependencies = {
     "mason-org/mason.nvim",
   },
-  config = function()
-    require("roslyn").setup({
-      lock_target = true, -- 记住上次 :Roslyn target 选择的 .sln，避免每次弹窗
-      config = {
-        capabilities = require("blink.cmp").get_lsp_capabilities(),
-      },
-    })
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    -- LSP 服务器设置（与 roslyn 插件配置分开）
+  -- init 在插件加载前执行，确保 vim.lsp.enable("roslyn") 触发时已使用我们的 root_dir
+  init = function()
     vim.lsp.config("roslyn", {
-      capabilities = capabilities,
-      -- 覆盖 root_dir：多个 sln 时不启动空客户端，而是自动弹出选择菜单
       root_dir = function(bufnr, on_dir)
         local roslyn_config = require("roslyn.config").get()
         if roslyn_config.lock_target and vim.g.roslyn_nvim_selected_solution then
@@ -43,6 +34,18 @@ return {
           end)
         end
       end,
+    })
+  end,
+  config = function()
+    require("roslyn").setup({
+      lock_target = true, -- 记住上次 :Roslyn target 选择的 .sln，避免每次弹窗
+      config = {
+        capabilities = require("blink.cmp").get_lsp_capabilities(),
+      },
+    })
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    vim.lsp.config("roslyn", {
+      capabilities = capabilities,
       settings = {
         ["csharp|background_analysis"] = {
           dotnet_analyzer_diagnostics_scope = "fullSolution",
