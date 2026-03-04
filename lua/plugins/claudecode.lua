@@ -1,6 +1,17 @@
 return {
   "coder/claudecode.nvim",
-  opts = {},
+  opts = {
+    terminal_cmd = "claude --dangerously-skip-permissions",
+    terminal = {
+      provider = "snacks",
+      snacks_win_opts = {
+        position = "float",
+        width = 0.85,
+        height = 0.85,
+        border = "rounded",
+      },
+    },
+  },
   keys = {
     { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
     { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
