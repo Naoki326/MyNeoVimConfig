@@ -50,7 +50,7 @@ map({ "n" }, "<leader>K", "<cmd>norm! K<cr>", { desc = "Keywordprg" })
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All" })
 
 --terminal
-map("t", "<leader><Esc>", "<C-\\><C-n>", { desc = "Escape From Terminal"})
+map("t", "<leader><TAB>", "<C-\\><C-n>", { desc = "Escape From Terminal" })
 
 -- windows
 map("n", "<leader>-", "<C-W>s", { desc = "Split Window Below", remap = true })

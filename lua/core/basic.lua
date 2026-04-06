@@ -16,6 +16,9 @@ vim.opt.splitright = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
+-- 使用系统的剪切板
+vim.opt.clipboard:append("unnamedplus")
+
 -- 设置编码为 utf-8
 vim.o.encoding = 'utf-8'
 vim.o.fileencoding = 'utf-8'
@@ -31,16 +34,28 @@ vim.o.shellpipe = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
 vim.o.shellquote = ''
 vim.o.shellxquote = ''
 
--- 使用 Windows 自带的剪贴板（PowerShell）
--- vim.g.clipboard = {
---   name = "WslClipboard",
---   copy = {
---     ["+"] = "pwsh.exe -c [Console]::In.ReadToEnd() | Set-Clipboard",
---     ["*"] = "pwsh.exe -c [Console]::In.ReadToEnd() | Set-Clipboard",
---   },
---   paste = {
---     ["+"] = "pwsh.exe -c Get-Clipboard",
---     ["*"] = "pwsh.exe -c Get-Clipboard",
---   },
---   cache_enabled = 0,
--- }
+function my_paste(reg)
+    return function(lines)
+        --[ 返回 “” 寄存器的内容，用来作为 p 操作符的粘贴物 ]
+        local content = vim.fn.getreg('"')
+        return vim.split(content, '\n')
+    end
+end
+
+-- SSH 环境下使用 OSC 52 将剪贴板内容转发到本地终端
+-- 要求本地终端支持 OSC 52（Windows Terminal 1.18+、iTerm2、kitty 等）
+if vim.env.SSH_CLIENT ~= nil or vim.env.SSH_TTY ~= nil or vim.env.SSH_CONNECTION ~= nil then
+  vim.g.clipboard = {
+    name = 'OSC 52',
+    copy = {
+      ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+      ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+    },
+    paste = {
+      -- ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+      -- ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+      ["+"] = my_paste("+"),
+      ["*"] = my_paste("*"),
+    },
+  }
+end

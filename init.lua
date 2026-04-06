@@ -1,4 +1,9 @@
 -- bootstrap lazy.nvim, LazyVim and your plugins
+
+vim.env.HTTP_PROXY = "http://127.0.0.1:7897"
+vim.env.HTTPS_PROXY = "http://127.0.0.1:7897"
+vim.env.NO_PROXY = "localhost,127.0.0.1"
+
 require("core.basic")
 require("core.autocmds")
 require("core.keymap")
