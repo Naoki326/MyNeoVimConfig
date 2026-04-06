@@ -54,7 +54,7 @@ return{
       { "<leader>sC", "<cmd>Telescope commands<cr>", desc = "Commands" },
       { "<leader>sd", "<cmd>Telescope diagnostics<cr>", desc = "Diagnostics" },
       { "<leader>sD", "<cmd>Telescope diagnostics bufnr=0<cr>", desc = "Buffer Diagnostics" },
-      { "<leader>sg",
+      { "<leader>sG",
         function()
             require('telescope.builtin').live_grep({
                         search_dirs = { },
@@ -63,7 +63,7 @@ return{
       end,
       desc = "Grep (Root Dir)" },
       {
-        "<leader>sG",
+        "<leader>sg",
         function()
             require('telescope.builtin').live_grep({
                         search_dirs = { vim.fn.getcwd() },
