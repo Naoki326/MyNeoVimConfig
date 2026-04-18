@@ -1,0 +1,289 @@
+{
+  "id": "2026-04-18-123810",
+  "generated_at": "2026-04-18T04:38:10.7547213Z",
+  "language": "zh",
+  "pages": [
+    {
+      "slug": "1-xiang-mu-zong-lan-mian-xiang-c-net-kai-fa-de-neovim-ide-pei-zhi",
+      "title": "项目总览：面向 C# / .NET 开发的 Neovim IDE 配置",
+      "file": "1-xiang-mu-zong-lan-mian-xiang-c-net-kai-fa-de-neovim-ide-pei-zhi.md",
+      "section": "入门指南",
+      "level": "Beginner"
+    },
+    {
+      "slug": "2-huan-jing-da-jian-yu-shou-ci-qi-dong",
+      "title": "环境搭建与首次启动",
+      "file": "2-huan-jing-da-jian-yu-shou-ci-qi-dong.md",
+      "section": "入门指南",
+      "level": "Beginner"
+    },
+    {
+      "slug": "3-kuai-jie-jian-ti-xi-su-lan-leader-jian-yu-he-xin-cao-zuo",
+      "title": "快捷键体系速览（Leader 键与核心操作）",
+      "file": "3-kuai-jie-jian-ti-xi-su-lan-leader-jian-yu-he-xin-cao-zuo.md",
+      "section": "入门指南",
+      "level": "Beginner"
+    },
+    {
+      "slug": "4-zheng-ti-jia-gou-yu-mo-kuai-jia-zai-liu-cheng",
+      "title": "整体架构与模块加载流程",
+      "file": "4-zheng-ti-jia-gou-yu-mo-kuai-jia-zai-liu-cheng.md",
+      "section": "架构深潜",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "5-he-xin-ji-chu-pei-zhi-bian-ji-qi-xing-wei-shell-jian-tie-ban-yu-bian-ma",
+      "title": "核心基础配置（编辑器行为、Shell、剪贴板与编码）",
+      "file": "5-he-xin-ji-chu-pei-zhi-bian-ji-qi-xing-wei-shell-jian-tie-ban-yu-bian-ma.md",
+      "section": "架构深潜",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "6-cha-jian-guan-li-ce-lue-lazy-nvim-yu-an-wen-jian-zu-zhi-mo-shi",
+      "title": "插件管理策略：lazy.nvim 与按文件组织模式",
+      "file": "6-cha-jian-guan-li-ce-lue-lazy-nvim-yu-an-wen-jian-zu-zhi-mo-shi.md",
+      "section": "架构深潜",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "7-roslyn-lsp-ji-cheng-yu-jie-jue-fang-an-guan-li",
+      "title": "Roslyn LSP 集成与解决方案管理",
+      "file": "7-roslyn-lsp-ji-cheng-yu-jie-jue-fang-an-guan-li.md",
+      "section": "架构深潜",
+      "group": "C# / .NET 开发环境",
+      "level": "Advanced"
+    },
+    {
+      "slug": "8-c-dap-diao-shi-qi-cong-gua-pei-qi-zhu-ce-dao-qi-dong-pei-zhi",
+      "title": "C# DAP 调试器：从适配器注册到启动配置",
+      "file": "8-c-dap-diao-shi-qi-cong-gua-pei-qi-zhu-ce-dao-qi-dong-pei-zhi.md",
+      "section": "架构深潜",
+      "group": "C# / .NET 开发环境",
+      "level": "Advanced"
+    },
+    {
+      "slug": "9-neo-tree-zhong-de-sln-wen-jian-gui-shu-zhuang-tai-xian-shi",
+      "title": "neo-tree 中的 .sln 文件归属状态显示",
+      "file": "9-neo-tree-zhong-de-sln-wen-jian-gui-shu-zhuang-tai-xian-shi.md",
+      "section": "架构深潜",
+      "group": "C# / .NET 开发环境",
+      "level": "Advanced"
+    },
+    {
+      "slug": "10-cs_solution-mo-kuai-sln-csproj-jie-xi-yu-glob-pi-pei-yin-qing",
+      "title": "cs_solution 模块：.sln / .csproj 解析与 Glob 匹配引擎",
+      "file": "10-cs_solution-mo-kuai-sln-csproj-jie-xi-yu-glob-pi-pei-yin-qing.md",
+      "section": "架构深潜",
+      "group": "C# / .NET 开发环境",
+      "level": "Advanced"
+    },
+    {
+      "slug": "11-dap-diao-shi-cao-zuo-duan-dian-dan-bu-bian-liang-xiu-gai-yu-re-zhong-zai",
+      "title": "DAP 调试操作：断点、单步、变量修改与热重载",
+      "file": "11-dap-diao-shi-cao-zuo-duan-dian-dan-bu-bian-liang-xiu-gai-yu-re-zhong-zai.md",
+      "section": "架构深潜",
+      "group": "C# / .NET 开发环境",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "12-blink-cmp-zi-dong-bu-quan-kuang-jia-pei-zhi",
+      "title": "blink.cmp 自动补全框架配置",
+      "file": "12-blink-cmp-zi-dong-bu-quan-kuang-jia-pei-zhi.md",
+      "section": "架构深潜",
+      "group": "代码补全与语言智能",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "13-lsp-tong-yong-pei-zhi-yu-mason-bao-guan-li",
+      "title": "LSP 通用配置与 Mason 包管理",
+      "file": "13-lsp-tong-yong-pei-zhi-yu-mason-bao-guan-li.md",
+      "section": "架构深潜",
+      "group": "代码补全与语言智能",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "14-treesitter-yu-fa-gao-liang-yu-zhe-die",
+      "title": "Treesitter 语法高亮与折叠",
+      "file": "14-treesitter-yu-fa-gao-liang-yu-zhe-die.md",
+      "section": "架构深潜",
+      "group": "代码补全与语言智能",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "15-lspsaga-dai-ma-dao-hang-yu-cao-zuo-zeng-qiang",
+      "title": "Lspsaga 代码导航与操作增强",
+      "file": "15-lspsaga-dai-ma-dao-hang-yu-cao-zuo-zeng-qiang.md",
+      "section": "架构深潜",
+      "group": "代码补全与语言智能",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "16-telescope-mo-hu-cha-zhao-qi-wen-jian-grep-yu-git-sou-suo",
+      "title": "Telescope 模糊查找器：文件、Grep 与 Git 搜索",
+      "file": "16-telescope-mo-hu-cha-zhao-qi-wen-jian-grep-yu-git-sou-suo.md",
+      "section": "架构深潜",
+      "group": "文件查找与导航",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "17-flash-kuai-su-tiao-zhuan-yu-treesitter-xuan-ze",
+      "title": "Flash 快速跳转与 Treesitter 选择",
+      "file": "17-flash-kuai-su-tiao-zhuan-yu-treesitter-xuan-ze.md",
+      "section": "架构深潜",
+      "group": "文件查找与导航",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "18-neo-tree-wen-jian-liu-lan-qi-pei-zhi",
+      "title": "neo-tree 文件浏览器配置",
+      "file": "18-neo-tree-wen-jian-liu-lan-qi-pei-zhi.md",
+      "section": "架构深潜",
+      "group": "文件查找与导航",
+      "level": "Beginner"
+    },
+    {
+      "slug": "19-yazi-wen-jian-guan-li-qi-ji-cheng",
+      "title": "Yazi 文件管理器集成",
+      "file": "19-yazi-wen-jian-guan-li-qi-ji-cheng.md",
+      "section": "架构深潜",
+      "group": "文件查找与导航",
+      "level": "Beginner"
+    },
+    {
+      "slug": "20-aerial-dai-ma-da-gang-yu-fu-hao-dao-hang",
+      "title": "Aerial 代码大纲与符号导航",
+      "file": "20-aerial-dai-ma-da-gang-yu-fu-hao-dao-hang.md",
+      "section": "架构深潜",
+      "group": "文件查找与导航",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "21-lazygit-ji-cheng",
+      "title": "LazyGit 集成",
+      "file": "21-lazygit-ji-cheng.md",
+      "section": "架构深潜",
+      "group": "Git 工作流",
+      "level": "Beginner"
+    },
+    {
+      "slug": "22-gitsigns-xing-ji-bian-geng-yu-blame",
+      "title": "Gitsigns 行级变更与 blame",
+      "file": "22-gitsigns-xing-ji-bian-geng-yu-blame.md",
+      "section": "架构深潜",
+      "group": "Git 工作流",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "23-diffview-chai-yi-cha-kan-yu-wen-jian-li-shi",
+      "title": "Diffview 差异查看与文件历史",
+      "file": "23-diffview-chai-yi-cha-kan-yu-wen-jian-li-shi.md",
+      "section": "架构深潜",
+      "group": "Git 工作流",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "24-zi-dong-pei-dui-yu-huan-rao-bian-ji-autopairs-surround",
+      "title": "自动配对与环绕编辑（autopairs + surround）",
+      "file": "24-zi-dong-pei-dui-yu-huan-rao-bian-ji-autopairs-surround.md",
+      "section": "架构深潜",
+      "group": "编辑体验增强",
+      "level": "Beginner"
+    },
+    {
+      "slug": "25-nvim-ufo-dai-ma-zhe-die",
+      "title": "nvim-ufo 代码折叠",
+      "file": "25-nvim-ufo-dai-ma-zhe-die.md",
+      "section": "架构深潜",
+      "group": "编辑体验增强",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "26-grug-far-xiang-mu-ji-sou-suo-ti-huan",
+      "title": "Grug-Far 项目级搜索替换",
+      "file": "26-grug-far-xiang-mu-ji-sou-suo-ti-huan.md",
+      "section": "架构深潜",
+      "group": "编辑体验增强",
+      "level": "Beginner"
+    },
+    {
+      "slug": "27-tokyonight-zhu-ti-pei-zhi",
+      "title": "Tokyonight 主题配置",
+      "file": "27-tokyonight-zhu-ti-pei-zhi.md",
+      "section": "架构深潜",
+      "group": "界面与终端",
+      "level": "Beginner"
+    },
+    {
+      "slug": "28-lualine-zhuang-tai-lan-yu-dap-lazy-zhuang-tai-ji-cheng",
+      "title": "Lualine 状态栏与 DAP/Lazy 状态集成",
+      "file": "28-lualine-zhuang-tai-lan-yu-dap-lazy-zhuang-tai-ji-cheng.md",
+      "section": "架构深潜",
+      "group": "界面与终端",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "29-noice-xiao-xi-yu-ming-ling-xing-ui-zhong-gou",
+      "title": "Noice 消息与命令行 UI 重构",
+      "file": "29-noice-xiao-xi-yu-ming-ling-xing-ui-zhong-gou.md",
+      "section": "架构深潜",
+      "group": "界面与终端",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "30-toggleterm-fu-dong-zhong-duan",
+      "title": "ToggleTerm 浮动终端",
+      "file": "30-toggleterm-fu-dong-zhong-duan.md",
+      "section": "架构深潜",
+      "group": "界面与终端",
+      "level": "Beginner"
+    },
+    {
+      "slug": "31-which-key-kuai-jie-jian-ti-shi-xi-tong",
+      "title": "Which-Key 快捷键提示系统",
+      "file": "31-which-key-kuai-jie-jian-ti-shi-xi-tong.md",
+      "section": "架构深潜",
+      "group": "界面与终端",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "32-windows-zhuan-shu-pei-zhi-powershell-shell-dai-li-ime-zi-dong-qie-huan",
+      "title": "Windows 专属配置：PowerShell Shell、代理、IME 自动切换",
+      "file": "32-windows-zhuan-shu-pei-zhi-powershell-shell-dai-li-ime-zi-dong-qie-huan.md",
+      "section": "架构深潜",
+      "group": "Windows 平台适配",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "33-ssh-yuan-cheng-huan-jing-xia-de-osc-52-jian-tie-ban-zhuan-fa",
+      "title": "SSH 远程环境下的 OSC 52 剪贴板转发",
+      "file": "33-ssh-yuan-cheng-huan-jing-xia-de-osc-52-jian-tie-ban-zhuan-fa.md",
+      "section": "架构深潜",
+      "group": "Windows 平台适配",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "34-openspec-gui-fan-qu-dong-de-she-ji-wen-dang-yu-bian-geng-liu-cheng",
+      "title": "OpenSpec 规范驱动的设计文档与变更流程",
+      "file": "34-openspec-gui-fan-qu-dong-de-she-ji-wen-dang-yu-bian-geng-liu-cheng.md",
+      "section": "架构深潜",
+      "group": "工程化与变更管理",
+      "level": "Advanced"
+    },
+    {
+      "slug": "35-stylua-dai-ma-ge-shi-hua-pei-zhi",
+      "title": "stylua 代码格式化配置",
+      "file": "35-stylua-dai-ma-ge-shi-hua-pei-zhi.md",
+      "section": "架构深潜",
+      "group": "工程化与变更管理",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "36-nvim_edit-ps1-yuan-cheng-bian-ji-jiao-ben-yu-neovim-server-mo-shi",
+      "title": "nvim_edit.ps1 远程编辑脚本与 Neovim Server 模式",
+      "file": "36-nvim_edit-ps1-yuan-cheng-bian-ji-jiao-ben-yu-neovim-server-mo-shi.md",
+      "section": "架构深潜",
+      "group": "工程化与变更管理",
+      "level": "Intermediate"
+    }
+  ]
+}

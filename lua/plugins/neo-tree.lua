@@ -5,26 +5,26 @@ return {
     "nvim-lua/plenary.nvim",
     "nvim-tree/nvim-web-devicons",
     "MunifTanjim/nui.nvim",
+    "s1n7ax/nvim-window-picker",
   },
   keys = {
     { "<leader>e", "<cmd>Neotree toggle<cr>", desc = "Toggle Neo-tree" },
     { "<leader>o", "<cmd>Neotree focus<cr>", desc = "Focus Neo-tree" },
   },
   config = function()
-    -- 当 Roslyn LSP 首次 attach 时，解析 .sln 文件并刷新 neo-tree
-    vim.api.nvim_create_autocmd("LspAttach", {
-      callback = function(args)
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
-        if not (client and client.name == "roslyn") then return end
+    -- 监听 roslyn.nvim 确定或切换 solution 的事件，同步初始化 cs_solution
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "RoslynOnInit",
+      callback = function(ev)
+        if ev.data.type ~= "solution" then return end
 
         local cs_sln = require("cs_solution")
-        if cs_sln._initialized then return end
+        -- 重置状态（支持 sln 切换时重新加载）
+        cs_sln._initialized = false
+        cs_sln._projects = {}
+        cs_sln._file_cache = {}
 
-        local buf_path = vim.api.nvim_buf_get_name(args.buf)
-        local start_dir = vim.fn.fnamemodify(buf_path, ":h")
-        local sln_path = cs_sln.find_sln(start_dir)
-
-        if cs_sln.init(sln_path) then
+        if cs_sln.init(ev.data.target) then
           vim.schedule(function()
             pcall(function()
               require("neo-tree.sources.manager").refresh("filesystem")

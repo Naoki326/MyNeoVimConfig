@@ -141,6 +141,12 @@ end
 
 ---在 start_dir 及其父目录中查找 .sln 文件
 function M.find_sln(start_dir)
+  -- 优先复用 roslyn.nvim 已选定的 solution
+  local roslyn_sln = vim.g.roslyn_nvim_selected_solution
+  if roslyn_sln and roslyn_sln ~= "" then
+    return normalize(roslyn_sln)
+  end
+
   local dir = vim.fn.fnamemodify(start_dir or vim.fn.getcwd(), ":p")
   dir = dir:gsub("\\", "/"):gsub("/$", "")
 
@@ -155,10 +161,10 @@ function M.find_sln(start_dir)
 end
 
 ---从 .sln 文件初始化
----@param sln_path string|nil  nil 则自动查找
+---@param sln_path string|nil  nil 则复用 roslyn 当前选中的 solution 或自动查找
 ---@return boolean
 function M.init(sln_path)
-  sln_path = sln_path or M.find_sln()
+  sln_path = sln_path or vim.g.roslyn_nvim_selected_solution or M.find_sln()
   if not sln_path then return false end
 
   local projects = parse_sln(sln_path)
