@@ -12,14 +12,5 @@ return {
     lazy = true,
     dependencies = { "mfussenegger/nvim-dap", "nvim-treesitter/nvim-treesitter" },
   },
-  {
-    "nvim-telescope/telescope-dap.nvim",
-    lazy = true,
-    dependencies = { "mfussenegger/nvim-dap", "nvim-telescope/telescope.nvim" },
-  },
-  {
-    "nvim-telescope/telescope-ui-select.nvim",
-    lazy = true,
-    dependencies = { "nvim-telescope/telescope.nvim" },
-  },
+  -- telescope-dap / telescope-ui-select 已移除（统一使用 snacks.picker）
 }

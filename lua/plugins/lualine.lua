@@ -71,18 +71,6 @@ return {
         lualine_x = {
           -- stylua: ignore
           {
-            function() return require("noice").api.status.command.get() end,
-            cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
-            color = { fg = "#ff9e64" }, -- Statement 高亮色
-          },
-          -- stylua: ignore
-          {
-            function() return require("noice").api.status.mode.get() end,
-            cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
-            color = { fg = "#7dcfff" }, -- Constant 高亮色
-          },
-          -- stylua: ignore
-          {
             function() return "  " .. require("dap").status() end,
             cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
             color = { fg = "#bb9af7" }, -- Debug 高亮色

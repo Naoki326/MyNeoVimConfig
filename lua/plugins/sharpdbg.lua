@@ -1,3 +1,3 @@
 return {
-    "MattParkerDev/sharpdbg",
+  "MattParkerDev/sharpdbg",
 }

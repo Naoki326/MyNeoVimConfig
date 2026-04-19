@@ -32,6 +32,8 @@ return {
     open_for_directories = false,
     keymaps = {
       show_help = "<f1>",
+      -- Windows 没有 realpath，禁用相对路径复制功能
+      copy_relative_path_to_selected_files = nil,
     },
   },
   -- 👇 if you use `open_for_directories=true`, this is recommended

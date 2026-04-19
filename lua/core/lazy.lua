@@ -28,5 +28,8 @@ require("lazy").setup({
     -- import/override with your plugins
     { import = "plugins" },
   },
+  rocks = {
+    enabled = false,
+  },
 })
 

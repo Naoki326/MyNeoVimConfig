@@ -120,18 +120,5 @@ return {
     },
     },
 
-  {
-    "nvim-telescope/telescope.nvim",
-    optional = true,
-    opts = function()
-        require("telescope").load_extension("aerial")
-    end,
-    keys = {
-      {
-        "<leader>ss",
-        "<cmd>Telescope aerial<cr>",
-        desc = "Goto Symbol (Aerial)",
-      },
-    },
-  },
+  -- telescope aerial 扩展已移除（统一使用 snacks.picker）
 }

@@ -34,6 +34,8 @@ return {
         },
     },
     config = function (_, opts)
+        -- 确保 lspconfig 被加载，注册 :LspInfo 等用户命令
+        require("lspconfig")
         require("mason").setup(opts)
         local registry = require("mason-registry")
 
@@ -66,11 +68,11 @@ return {
             end
 
             -- 跳转快捷键
-            map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-            map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-            map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
-            map("gy", require("telescope.builtin").lsp_type_definitions, "Goto T[y]pe Definition")
-            map("<leader>cs", require("telescope.builtin").lsp_document_symbols, "Document [S]ymbols")
+            map("gd", function() Snacks.picker.lsp_definitions() end, "[G]oto [D]efinition")
+            map("gr", function() Snacks.picker.lsp_references() end, "[G]oto [R]eferences")
+            map("gI", function() Snacks.picker.lsp_implementations() end, "[G]oto [I]mplementation")
+            map("gy", function() Snacks.picker.lsp_type_definitions() end, "Goto T[y]pe Definition")
+            map("<leader>cs", function() Snacks.picker.lsp_symbols() end, "Document [S]ymbols")
 
             -- 代码操作
             map("<leader>cr", vim.lsp.buf.rename, "[C]ode [R]ename")
