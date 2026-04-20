@@ -2,39 +2,55 @@ return {
   "snacks.nvim",
   lazy = false,
   priority = 1000,
-  opts = {
-    notifier = { enabled = true },
-    picker = { enabled = true, ui_select = true },
-    dashboard = {
-      preset = {
-        pick = function(cmd, opts)
-          local map = { files = "files", live_grep = "grep", oldfiles = "recent" }
-          local picker = map[cmd] or cmd
-          return Snacks.picker[picker](opts)
-        end,
-        header = [[
-        ██╗      █████╗ ███████╗██╗   ██╗██╗   ██╗██╗███╗   ███╗          Z
-        ██║     ██╔══██╗╚══███╔╝╚██╗ ██╔╝██║   ██║██║████╗ ████║      Z
-        ██║     ███████║  ███╔╝  ╚████╔╝ ██║   ██║██║██╔████╔██║   z
-        ██║     ██╔══██║ ███╔╝    ╚██╔╝  ╚██╗ ██╔╝██║██║╚██╔╝██║ z
-        ███████╗██║  ██║███████╗   ██║    ╚████╔╝ ██║██║ ╚═╝ ██║
-        ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝     ╚═══╝  ╚═╝╚═╝     ╚═╝
- ]],
-        keys = {
-          { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
-          { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
-          { icon = " ", key = "p", desc = "Projects", action = ":lua Snacks.picker.projects()" },
-          { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
-          { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
-          { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
-          { icon = " ", key = "s", desc = "Restore Session", section = "session" },
-          { icon = " ", key = "x", desc = "Lazy Extras", action = ":LazyExtras" },
-          { icon = "󰒲 ", key = "l", desc = "Lazy", action = ":Lazy" },
-          { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+    opts = function()
+      local logo = [[
+         ██╗      █████╗ ███████╗██╗   ██╗██╗   ██╗██╗███╗   ███╗          Z
+         ██║     ██╔══██╗╚══███╔╝╚██╗ ██╔╝██║   ██║██║████╗ ████║      Z    
+         ██║     ███████║  ███╔╝  ╚████╔╝ ██║   ██║██║██╔████╔██║   z       
+         ██║     ██╔══██║ ███╔╝    ╚██╔╝  ╚██╗ ██╔╝██║██║╚██╔╝██║ z         
+         ███████╗██║  ██║███████╗   ██║    ╚████╔╝ ██║██║ ╚═╝ ██║           
+         ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝     ╚═══╝  ╚═╝╚═╝     ╚═╝           
+      ]]
+      logo = string.rep("\n", 8) .. logo .. "\n"
+
+      local opts = {
+        notifier = { enabled = true },
+        picker = {
+          enabled = true,
+          ui_select = true,
+          -- default、telescope、ivy、dropdown、vertical、sidebar
+          layout = {
+            preset = "telescope",
+            -- width = 1.0,
+            -- height = 1.0,
+          }, -- 全局默认布局预设
         },
-      },
-    },
-  },
+        dashboard = {
+          preset = {
+            pick = function(cmd, opts)
+              local map = { files = "files", live_grep = "grep", oldfiles = "recent" }
+              local picker = map[cmd] or cmd
+              return Snacks.picker[picker](opts)
+            end,
+            header = logo,
+            -- header = vim.split(logo, "\n"),
+            keys = {
+              { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
+              { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+              { icon = " ", key = "p", desc = "Projects", action = ":lua Snacks.picker.projects()" },
+              { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
+              { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
+              { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
+              { icon = " ", key = "s", desc = "Restore Session", section = "session" },
+              -- { icon = " ", key = "x", desc = "Lazy Extras", action = ":LazyExtras" },
+              { icon = "󰒲 ", key = "l", desc = "Lazy", action = ":Lazy" },
+              { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+            },
+          },
+        },
+      }
+      return opts
+    end,
   keys = {
     -- buffers / files
     { "<leader>,", function() Snacks.picker.buffers({ sort = { "lastused", "bufnr" } }) end, desc = "Switch Buffer" },
