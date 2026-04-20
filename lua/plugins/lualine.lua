@@ -35,6 +35,7 @@ return {
     }
 
     vim.o.laststatus = vim.g.lualine_laststatus
+    vim.o.statusline = nil
 
     local opts = {
       options = {

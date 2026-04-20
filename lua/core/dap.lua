@@ -280,6 +280,10 @@ function M.setup()
       map("<leader>dc", continue_or_pick, "Continue / Pick Config")
       map("<F5>",       continue_or_pick, "Continue / Pick Config")
 
+      -- Pause
+      map("<leader>dp", dap.pause, "Pause")
+      map("<F8>",       dap.pause, "Pause")
+
       -- Step
       map("<leader>do", dap.step_over, "Step Over")
       map("<F10>",      dap.step_over, "Step Over")
