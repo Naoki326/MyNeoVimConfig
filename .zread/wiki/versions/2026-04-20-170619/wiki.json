@@ -1,0 +1,228 @@
+{
+  "id": "2026-04-20-170619",
+  "generated_at": "2026-04-20T09:06:19.2472605Z",
+  "language": "zh",
+  "pages": [
+    {
+      "slug": "1-xiang-mu-gai-shu-mian-xiang-c-net-kai-fa-zhe-de-neovim-pei-zhi-kuang-jia",
+      "title": "项目概述：面向 C#/.NET 开发者的 Neovim 配置框架",
+      "file": "1-xiang-mu-gai-shu-mian-xiang-c-net-kai-fa-zhe-de-neovim-pei-zhi-kuang-jia.md",
+      "section": "入门指南",
+      "level": "Beginner"
+    },
+    {
+      "slug": "2-huan-jing-da-jian-yu-shou-ci-qi-dong",
+      "title": "环境搭建与首次启动",
+      "file": "2-huan-jing-da-jian-yu-shou-ci-qi-dong.md",
+      "section": "入门指南",
+      "level": "Beginner"
+    },
+    {
+      "slug": "3-pei-zhi-wen-jian-jia-zai-liu-cheng-yu-qi-dong-shun-xu",
+      "title": "配置文件加载流程与启动顺序",
+      "file": "3-pei-zhi-wen-jian-jia-zai-liu-cheng-yu-qi-dong-shun-xu.md",
+      "section": "入门指南",
+      "level": "Beginner"
+    },
+    {
+      "slug": "4-shuang-mo-kuai-fen-ceng-she-ji-core-ji-chu-ceng-yu-plugins-kuo-zhan-ceng",
+      "title": "双模块分层设计：core 基础层与 plugins 扩展层",
+      "file": "4-shuang-mo-kuai-fen-ceng-she-ji-core-ji-chu-ceng-yu-plugins-kuo-zhan-ceng.md",
+      "section": "深度解析",
+      "group": "核心架构",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "5-lazy-nvim-cha-jian-guan-li-lan-jia-zai-ce-lue-yu-spec-gui-fan",
+      "title": "lazy.nvim 插件管理：懒加载策略与 spec 规范",
+      "file": "5-lazy-nvim-cha-jian-guan-li-lan-jia-zai-ce-lue-yu-spec-gui-fan.md",
+      "section": "深度解析",
+      "group": "核心架构",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "6-windows-ping-tai-gua-pei-shell-bian-ma-dai-li-yu-jian-tie-ban",
+      "title": "Windows 平台适配：Shell、编码、代理与剪贴板",
+      "file": "6-windows-ping-tai-gua-pei-shell-bian-ma-dai-li-yu-jian-tie-ban.md",
+      "section": "深度解析",
+      "group": "核心架构",
+      "level": "Advanced"
+    },
+    {
+      "slug": "7-roslyn-lsp-pei-zhi-yu-yan-fu-wu-qi-guan-li-yu-jie-jue-fang-an-ding-wei",
+      "title": "Roslyn LSP 配置：语言服务器管理与解决方案定位",
+      "file": "7-roslyn-lsp-pei-zhi-yu-yan-fu-wu-qi-guan-li-yu-jie-jue-fang-an-ding-wei.md",
+      "section": "深度解析",
+      "group": "C#/.NET 开发工具链",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "8-dap-diao-shi-xi-tong-jia-gou-duo-diao-shi-qi-hou-duan-qie-huan-yu-gua-pei-qi-zhu-ce",
+      "title": "DAP 调试系统架构：多调试器后端切换与适配器注册",
+      "file": "8-dap-diao-shi-xi-tong-jia-gou-duo-diao-shi-qi-hou-duan-qie-huan-yu-gua-pei-qi-zhu-ce.md",
+      "section": "深度解析",
+      "group": "C#/.NET 开发工具链",
+      "level": "Advanced"
+    },
+    {
+      "slug": "9-diao-shi-pei-zhi-xiang-jie-launch-json-jia-zai-dll-jian-ce-yu-re-zhong-zai",
+      "title": "调试配置详解：launch.json 加载、DLL 检测与热重载",
+      "file": "9-diao-shi-pei-zhi-xiang-jie-launch-json-jia-zai-dll-jian-ce-yu-re-zhong-zai.md",
+      "section": "深度解析",
+      "group": "C#/.NET 开发工具链",
+      "level": "Advanced"
+    },
+    {
+      "slug": "10-easy-dotnet-ji-cheng-xiang-mu-guan-li-ce-shi-yun-xing-yu-nuget-cao-zuo",
+      "title": "easy-dotnet 集成：项目管理、测试运行与 NuGet 操作",
+      "file": "10-easy-dotnet-ji-cheng-xiang-mu-guan-li-ce-shi-yun-xing-yu-nuget-cao-zuo.md",
+      "section": "深度解析",
+      "group": "C#/.NET 开发工具链",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "11-blink-cmp-bu-quan-kuang-jia-easy-dotnet-yuan-ji-cheng-yu-cmdline-bu-quan",
+      "title": "blink.cmp 补全框架：easy-dotnet 源集成与 cmdline 补全",
+      "file": "11-blink-cmp-bu-quan-kuang-jia-easy-dotnet-yuan-ji-cheng-yu-cmdline-bu-quan.md",
+      "section": "深度解析",
+      "group": "C#/.NET 开发工具链",
+      "level": "Advanced"
+    },
+    {
+      "slug": "12-kuai-jie-jian-ti-xi-leader-jian-fen-zu-yu-buffer-local-bang-ding-ce-lue",
+      "title": "快捷键体系：Leader 键分组与 buffer-local 绑定策略",
+      "file": "12-kuai-jie-jian-ti-xi-leader-jian-fen-zu-yu-buffer-local-bang-ding-ce-lue.md",
+      "section": "深度解析",
+      "group": "编辑器基础能力",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "13-wen-jian-liu-lan-yu-xiang-mu-guan-li-neo-tree-yazi-yu-snacks-picker",
+      "title": "文件浏览与项目管理：neo-tree、yazi 与 snacks picker",
+      "file": "13-wen-jian-liu-lan-yu-xiang-mu-guan-li-neo-tree-yazi-yu-snacks-picker.md",
+      "section": "深度解析",
+      "group": "编辑器基础能力",
+      "level": "Beginner"
+    },
+    {
+      "slug": "14-treesitter-pei-zhi-yu-fa-gao-liang-dai-ma-zhe-die-yu-razor-wen-jian-zhi-chi",
+      "title": "Treesitter 配置：语法高亮、代码折叠与 Razor 文件支持",
+      "file": "14-treesitter-pei-zhi-yu-fa-gao-liang-dai-ma-zhe-die-yu-razor-wen-jian-zhi-chi.md",
+      "section": "深度解析",
+      "group": "编辑器基础能力",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "15-dai-ma-ge-shi-hua-conform-nvim-bao-cun-shi-zi-dong-ge-shi-hua",
+      "title": "代码格式化：conform.nvim 保存时自动格式化",
+      "file": "15-dai-ma-ge-shi-hua-conform-nvim-bao-cun-shi-zi-dong-ge-shi-hua.md",
+      "section": "深度解析",
+      "group": "编辑器基础能力",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "16-zhong-duan-ji-cheng-toggleterm-fu-dong-zhong-duan-yu-powershell-7",
+      "title": "终端集成：toggleterm 浮动终端与 PowerShell 7",
+      "file": "16-zhong-duan-ji-cheng-toggleterm-fu-dong-zhong-duan-yu-powershell-7.md",
+      "section": "深度解析",
+      "group": "编辑器基础能力",
+      "level": "Beginner"
+    },
+    {
+      "slug": "17-git-gong-zuo-liu-lazygit-gitsigns-yu-diffview",
+      "title": "Git 工作流：lazygit、gitsigns 与 diffview",
+      "file": "17-git-gong-zuo-liu-lazygit-gitsigns-yu-diffview.md",
+      "section": "深度解析",
+      "group": "Git 与版本控制",
+      "level": "Beginner"
+    },
+    {
+      "slug": "18-jie-mian-mei-hua-xi-tong-tokyonight-zhu-ti-noice-ming-ling-xing-lualine-zhuang-tai-lan",
+      "title": "界面美化系统：tokyonight 主题、noice 命令行、lualine 状态栏",
+      "file": "18-jie-mian-mei-hua-xi-tong-tokyonight-zhu-ti-noice-ming-ling-xing-lualine-zhuang-tai-lan.md",
+      "section": "深度解析",
+      "group": "UI 与外观定制",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "19-buffer-guan-li-yu-dao-hang-bufferline-biao-qian-ye",
+      "title": "Buffer 管理与导航：bufferline 标签页",
+      "file": "19-buffer-guan-li-yu-dao-hang-bufferline-biao-qian-ye.md",
+      "section": "深度解析",
+      "group": "UI 与外观定制",
+      "level": "Beginner"
+    },
+    {
+      "slug": "20-dai-ma-zhe-die-fang-an-nvim-ufo-yu-treesitter-zhe-die-biao-da-shi",
+      "title": "代码折叠方案：nvim-ufo 与 Treesitter 折叠表达式",
+      "file": "20-dai-ma-zhe-die-fang-an-nvim-ufo-yu-treesitter-zhe-die-biao-da-shi.md",
+      "section": "深度解析",
+      "group": "UI 与外观定制",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "21-ai-bian-ma-zhu-shou-ji-cheng-claude-code-pei-zhi-yu-shi-yong",
+      "title": "AI 编码助手集成：Claude Code 配置与使用",
+      "file": "21-ai-bian-ma-zhu-shou-ji-cheng-claude-code-pei-zhi-yu-shi-yong.md",
+      "section": "深度解析",
+      "group": "高级功能与扩展",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "22-quan-ju-sou-suo-yu-ti-huan-grug-far-kua-wen-jian-sou-suo",
+      "title": "全局搜索与替换：grug-far 跨文件搜索",
+      "file": "22-quan-ju-sou-suo-yu-ti-huan-grug-far-kua-wen-jian-sou-suo.md",
+      "section": "深度解析",
+      "group": "高级功能与扩展",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "23-kuai-jie-jian-fa-xian-which-key-an-jian-ti-shi-xi-tong",
+      "title": "快捷键发现：which-key 按键提示系统",
+      "file": "23-kuai-jie-jian-fa-xian-which-key-an-jian-ti-shi-xi-tong.md",
+      "section": "深度解析",
+      "group": "高级功能与扩展",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "24-fu-hao-da-gang-yu-dai-ma-dao-hang-aerial-nvim",
+      "title": "符号大纲与代码导航：aerial.nvim",
+      "file": "24-fu-hao-da-gang-yu-dai-ma-dao-hang-aerial-nvim.md",
+      "section": "深度解析",
+      "group": "高级功能与扩展",
+      "level": "Beginner"
+    },
+    {
+      "slug": "25-bian-ji-zeng-qiang-flash-kuai-su-tiao-zhuan-nvim-surround-autopairs",
+      "title": "编辑增强：flash 快速跳转、nvim-surround、autopairs",
+      "file": "25-bian-ji-zeng-qiang-flash-kuai-su-tiao-zhuan-nvim-surround-autopairs.md",
+      "section": "深度解析",
+      "group": "高级功能与扩展",
+      "level": "Beginner"
+    },
+    {
+      "slug": "26-openspec-gui-fan-qu-dong-kai-fa-xu-qiu-gui-ge-yu-bian-geng-guan-li",
+      "title": "openspec 规范驱动开发：需求规格与变更管理",
+      "file": "26-openspec-gui-fan-qu-dong-kai-fa-xu-qiu-gui-ge-yu-bian-geng-guan-li.md",
+      "section": "深度解析",
+      "group": "工程化与规范",
+      "level": "Intermediate"
+    },
+    {
+      "slug": "27-dai-ma-feng-ge-yue-ding-stylua-ge-shi-hua-pei-zhi",
+      "title": "代码风格约定：stylua 格式化配置",
+      "file": "27-dai-ma-feng-ge-yue-ding-stylua-ge-shi-hua-pei-zhi.md",
+      "section": "深度解析",
+      "group": "工程化与规范",
+      "level": "Beginner"
+    },
+    {
+      "slug": "28-mason-lsp-guan-li-fu-wu-qi-zi-dong-an-zhuang-yu-capabilities-zhu-ce",
+      "title": "Mason LSP 管理：服务器自动安装与 capabilities 注册",
+      "file": "28-mason-lsp-guan-li-fu-wu-qi-zi-dong-an-zhuang-yu-capabilities-zhu-ce.md",
+      "section": "深度解析",
+      "group": "工程化与规范",
+      "level": "Intermediate"
+    }
+  ]
+}
