@@ -17,5 +17,4 @@ plugin/
 # Claude Code 相关
 .claude/
 
-# 可选：如果你想让每台电脑使用最新版本的插件，取消注释下面这行
-# lazy-lock.json
+lazy-lock.json
