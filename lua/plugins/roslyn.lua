@@ -13,6 +13,10 @@ return {
     })
 
     vim.lsp.config("roslyn", {
+      capabilities = require("blink.cmp").get_lsp_capabilities(),
+      handlers = {
+        ["activeProject/changed"] = function() end,
+      },
       settings = {
         ["csharp|background_analysis"] = {
           dotnet_analyzer_diagnostics_scope = "openFiles",
@@ -49,7 +53,7 @@ return {
           local clients = vim.lsp.get_clients({ name = "roslyn" })
           if #clients == 0 then
             vim.notify("Roslyn: no active client, starting...", vim.log.levels.INFO)
-            vim.cmd("LspStart roslyn")
+            vim.lsp.enable("roslyn")
             return
           end
           for _, c in ipairs(clients) do
@@ -57,7 +61,7 @@ return {
           end
           vim.notify("Roslyn: restarting analysis...", vim.log.levels.INFO)
           vim.defer_fn(function()
-            vim.cmd("LspStart roslyn")
+            vim.lsp.enable("roslyn")
           end, 500)
         end, "Restart Analysis")
       end,
