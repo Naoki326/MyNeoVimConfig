@@ -34,6 +34,13 @@ return {
             },
         })
 
+        -- C# treesitter indent 兜底：返回 -1 时回退到 cindent
+        _G._cs_ts_indent = function()
+            local ts = require("nvim-treesitter").indentexpr()
+            if ts >= 0 then return ts end
+            return vim.fn.cindent(vim.v.lnum)
+        end
+
         vim.api.nvim_create_autocmd("FileType", {
             pattern = {
                 "c",
@@ -50,10 +57,16 @@ return {
             callback = function(args)
                 vim.treesitter.start()
                 -- indent: 缩进（experimental）
-                vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                if vim.bo[args.buf].filetype == "cs" then
+                    vim.bo[args.buf].indentexpr = "v:lua._cs_ts_indent()"
+                else
+                    vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                end
                 -- fold: 代码折叠
-                vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
-                vim.wo[0][0].foldmethod = "expr"
+                for _, winid in ipairs(vim.fn.win_findbuf(args.buf)) do
+                    vim.wo[winid].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+                    vim.wo[winid].foldmethod = "expr"
+                end
             end,
         })
     end,

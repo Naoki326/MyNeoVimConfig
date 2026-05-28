@@ -5,9 +5,9 @@ if vim.fn.has("win32") == 1 then
     vim.fn.system("chcp 65001")
 end
 
-vim.env.HTTP_PROXY = "http://127.0.0.1:7897"
-vim.env.HTTPS_PROXY = "http://127.0.0.1:7897"
-vim.env.NO_PROXY = "localhost,127.0.0.1"
+-- vim.env.HTTP_PROXY = "http://127.0.0.1:7897"
+-- vim.env.HTTPS_PROXY = "http://127.0.0.1:7897"
+-- vim.env.NO_PROXY = "localhost,127.0.0.1"
 
 require("core.basic")
 require("core.autocmds")

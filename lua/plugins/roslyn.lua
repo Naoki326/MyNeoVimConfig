@@ -5,13 +5,7 @@ return {
     "mason-org/mason.nvim",
   },
   config = function()
-    require("roslyn").setup({
-      lock_target = true, -- 记住上次 :Roslyn target 选择的 .sln，避免每次弹窗
-      config = {
-        capabilities = require("blink.cmp").get_lsp_capabilities(),
-      },
-    })
-
+    -- 必须在 roslyn.nvim 的 plugin/ 脚本调用 vim.lsp.enable() 之前完成配置
     vim.lsp.config("roslyn", {
       capabilities = require("blink.cmp").get_lsp_capabilities(),
       handlers = {
@@ -29,6 +23,13 @@ return {
         ["csharp|code_lens"] = {
           dotnet_enable_references_code_lens = true,
         },
+      },
+    })
+
+    require("roslyn").setup({
+      lock_target = true, -- 记住上次 :Roslyn target 选择的 .sln，避免每次弹窗
+      extensions = {
+        razor = { enabled = false }, -- 禁用 Razor 扩展，避免 --razorSourceGenerator 等参数不被当前版本 Roslyn 识别
       },
     })
 
@@ -62,7 +63,7 @@ return {
           vim.notify("Roslyn: restarting analysis...", vim.log.levels.INFO)
           vim.defer_fn(function()
             vim.lsp.enable("roslyn")
-          end, 500)
+          end, 1500)
         end, "Restart Analysis")
       end,
     })
