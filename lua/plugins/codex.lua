@@ -1,28 +1,53 @@
-return {
-  "kkrampis/codex.nvim",
-  lazy = true,
-  cmd = { "Codex", "CodexToggle" }, -- Optional: Load only on command execution
-  keys = {
-    {
-      "<leader>cc", -- Change this to your preferred keybinding
-      function()
-        require("codex").toggle()
-      end,
-      desc = "Toggle Codex popup or side-panel",
-      mode = { "n", "t" },
+local codex_cmd = { "codex", "--yolo" }
+local codex_resume_cmd = { "codex", "--yolo", "resume", "--last" }
+
+local terminal_opts = {
+    win = {
+        position = "float",
+        width = 0.95,
+        height = 0.95,
+        border = "rounded",
+        enter = true,
+        title = " Codex ",
+        title_pos = "center",
     },
-  },
-  opts = {
-    keymaps = {
-      toggle = nil, -- Keybind to toggle Codex window (Disabled by default, watch out for conflicts)
-      quit = "<C-q>", -- Keybind to close the Codex window (default: Ctrl + q)
-    }, -- Disable internal default keymap (<leader>cc -> :CodexToggle)
-    border = "rounded", -- Options: 'single', 'double', or 'rounded'
-    width = 0.9, -- Width of the floating window (0.0 to 1.0)
-    height = 0.9, -- Height of the floating window (0.0 to 1.0)
-    model = nil, -- Optional: pass a string to use a specific model (e.g., 'o3-mini')
-    autoinstall = true, -- Automatically install the Codex CLI if not found
-    panel = false, -- Open Codex in a side-panel (vertical split) instead of floating window
-    use_buffer = false, -- Capture Codex stdout into a normal buffer instead of a terminal buffer
-  },
+}
+
+local function toggle_codex(cmd)
+    require("snacks.terminal").toggle(cmd, vim.deepcopy(terminal_opts))
+end
+
+return {
+    "snacks.nvim",
+    init = function()
+        vim.api.nvim_create_user_command("Codex", function()
+            toggle_codex(codex_cmd)
+        end, { desc = "Toggle Codex in Snacks terminal" })
+
+        vim.api.nvim_create_user_command("CodexToggle", function()
+            toggle_codex(codex_cmd)
+        end, { desc = "Toggle Codex in Snacks terminal" })
+
+        vim.api.nvim_create_user_command("CodexResume", function()
+            toggle_codex(codex_resume_cmd)
+        end, { desc = "Resume last Codex session in Snacks terminal" })
+    end,
+    keys = {
+        {
+            "<leader>cc",
+            function()
+                toggle_codex(codex_cmd)
+            end,
+            desc = "Toggle Codex",
+            mode = { "n", "t" },
+        },
+        {
+            "<leader>cr",
+            function()
+                toggle_codex(codex_resume_cmd)
+            end,
+            desc = "Resume last Codex session",
+            mode = { "n", "t" },
+        },
+    },
 }
