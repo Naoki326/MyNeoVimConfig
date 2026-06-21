@@ -4,5 +4,20 @@ return {
   opts = {
     log_level = "error",
     auto_session_suppress_dirs = { "~/", "~/Downloads", "/" },
+    -- 默认行为：restore 遇到错误会禁用 auto_save，导致后续改动丢失
+    -- 改为始终保留 auto_save 开启，仅忽略 fold/help 错误（保持与默认相同的忽略逻辑）
+    restore_error_handler = function(error_msg)
+      if error_msg then
+        if
+          string.find(error_msg, "E490: No fold found")
+          or string.find(error_msg, "E16: Invalid range")
+          or string.find(error_msg, "Vim(help):E661", 1, true)
+        then
+          return true
+        end
+      end
+      vim.notify("Session restore error (auto_save kept on): " .. tostring(error_msg), vim.log.levels.WARN)
+      return true -- 始终保留 auto_save，不因恢复错误而丢失后续改动
+    end,
   },
 }

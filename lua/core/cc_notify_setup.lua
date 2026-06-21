@@ -85,7 +85,8 @@ local function settings_has_hook(cfg)
     return false
 end
 
---- 同步 hook 脚本（幂等）；返回 true 表示这次写了/更新了
+--- 同步 hook 脚本（幂等）
+---@return "wrote"|"unchanged"|"error" wrote=本次写入 unchanged=已是最新 error=写入失败
 local function sync_hook_script()
     local target = vim.fn.expand("~/.claude/hooks/on-stop.sh")
     local dir = vim.fn.fnamemodify(target, ":h")
@@ -93,12 +94,13 @@ local function sync_hook_script()
         vim.fn.mkdir(dir, "p")
     end
     if read_file(target) == HOOK_SCRIPT then
-        return false
+        return "unchanged"
     end
-    return write_file(target, HOOK_SCRIPT)
+    return write_file(target, HOOK_SCRIPT) and "wrote" or "error"
 end
 
---- 合并 settings.json 注册 Stop hook（幂等；改动时备份 .bak）；返回 true 表示这次改了
+--- 合并 settings.json 注册 Stop hook（幂等；改动时备份 .bak）
+---@return "wrote"|"unchanged"|"error" wrote=本次改了 unchanged=已注册 error=写入失败
 local function sync_settings()
     local path = vim.fn.expand("~/.claude/settings.json")
     local raw = read_file(path) or ""
@@ -110,7 +112,7 @@ local function sync_settings()
         end
     end
     if settings_has_hook(cfg) then
-        return false
+        return "unchanged"
     end
     if raw ~= "" then
         write_file(path .. ".bak", raw)
@@ -118,62 +120,82 @@ local function sync_settings()
     cfg.hooks = cfg.hooks or {}
     cfg.hooks.Stop = cfg.hooks.Stop or {}
     table.insert(cfg.hooks.Stop, { hooks = { { type = "command", command = HOOK_COMMAND } } })
-    return write_file(path, format_json(vim.json.encode(cfg)))
+    return write_file(path, format_json(vim.json.encode(cfg))) and "wrote" or "error"
 end
 
---- 检查运行所需的外部依赖；返回缺失项列表（空表=全部就绪）
----@param exec_fn? fun(name: string): number 可执行性探测函数，默认 vim.fn.executable
-function M.check_deps(exec_fn)
-    exec_fn = exec_fn or vim.fn.executable
+--- 检查硬依赖；返回缺失项列表（空表=就绪）
+--- 只检 Neovim 版本：bash/jq 都是 hook 执行侧（Claude Code）的依赖，不由 neovim 预检——
+--- CC 拿不到 bash 整个 hook 就跑不起来（功能直接罢工），jq 缺失 hook 脚本有 sed 兜底。
+function M.check_deps()
     local missing = {}
     local v = vim.version()
     if v.major == 0 and v.minor < 9 then
         table.insert(missing, "Neovim ≥ 0.9（当前 " .. tostring(v) .. "；$NVIM 自动注入与 vim.on_key 需要）")
     end
-    if exec_fn("jq") == 0 then
-        table.insert(missing, "jq（Windows: winget install jqlang.jq | scoop install jq；macOS: brew install jq）")
-    end
-    if exec_fn("bash") == 0 then
-        table.insert(missing, "bash（Windows: 安装 Git for Windows；Linux/macOS 自带）")
-    end
     return missing
 end
 
---- 启动自检：同步脚本 + 合并 settings（幂等；有变更才通知）+ 依赖检测
+--- 启动自检：硬依赖缺失才阻断；否则同步脚本 + 合并 settings（幂等；有变更/失败才通知）
 function M.boot()
-    local changed_script = sync_hook_script()
-    local changed_settings = sync_settings()
     local missing = M.check_deps()
+    if #missing > 0 then
+        -- 硬依赖缺失（如 Neovim 版本不足）：功能无法工作，不部署
+        vim.schedule(function()
+            vim.notify("CC Notify 硬依赖缺失，对话完成通知将不生效：\n  • " .. table.concat(missing, "\n  • "),
+                vim.log.levels.ERROR)
+        end)
+        return
+    end
+    local s_script = sync_hook_script()
+    local s_settings = sync_settings()
     vim.schedule(function()
-        if #missing > 0 then
-            -- 依赖缺失优先提示（功能将不生效），即使本次有部署也只提示依赖
-            vim.notify("CC Notify 缺少依赖，对话完成通知将不生效：\n  • " .. table.concat(missing, "\n  • "),
-                vim.log.levels.WARN)
+        -- 写入失败优先报错，避免"静默失败"被当成"已是最新"
+        local errors = {}
+        if s_script == "error" then
+            table.insert(errors, "on-stop.sh")
+        end
+        if s_settings == "error" then
+            table.insert(errors, "settings.json")
+        end
+        if #errors > 0 then
+            vim.notify("CC Notify 写入失败（权限/磁盘？），请检查：" .. table.concat(errors, " + "),
+                vim.log.levels.ERROR)
             return
         end
-        if changed_script or changed_settings then
-            local parts = {}
-            if changed_script then
-                table.insert(parts, "on-stop.sh")
-            end
-            if changed_settings then
-                table.insert(parts, "settings.json(.bak 已备份)")
-            end
-            vim.notify("CC Notify: 已自动部署 " .. table.concat(parts, " + "), vim.log.levels.INFO)
+        local wrote = {}
+        if s_script == "wrote" then
+            table.insert(wrote, "on-stop.sh")
+        end
+        if s_settings == "wrote" then
+            table.insert(wrote, "settings.json(.bak 已备份)")
+        end
+        if #wrote > 0 then
+            vim.notify("CC Notify: 已自动部署 " .. table.concat(wrote, " + "), vim.log.levels.INFO)
         end
     end)
 end
 
 --- 手动重新部署（供 :CCNotifyInstall，强制跑一遍并通知结果）
 function M.install()
-    local changed_script = sync_hook_script()
-    local changed_settings = sync_settings()
     local missing = M.check_deps()
     if #missing > 0 then
-        vim.notify("CC Notify 缺少依赖：\n  • " .. table.concat(missing, "\n  • "), vim.log.levels.WARN)
+        vim.notify("CC Notify 硬依赖缺失，无法部署：\n  • " .. table.concat(missing, "\n  • "), vim.log.levels.ERROR)
         return
     end
-    local msg = (changed_script or changed_settings) and "部署/更新完成" or "已是最新，无需变更"
+    local s_script = sync_hook_script()
+    local s_settings = sync_settings()
+    local errors = {}
+    if s_script == "error" then
+        table.insert(errors, "on-stop.sh")
+    end
+    if s_settings == "error" then
+        table.insert(errors, "settings.json")
+    end
+    if #errors > 0 then
+        vim.notify("CC Notify 写入失败（权限/磁盘？）：" .. table.concat(errors, " + "), vim.log.levels.ERROR)
+        return
+    end
+    local msg = (s_script == "wrote" or s_settings == "wrote") and "部署/更新完成" or "已是最新，无需变更"
     vim.notify("CC Notify: " .. msg, vim.log.levels.INFO)
 end
 
