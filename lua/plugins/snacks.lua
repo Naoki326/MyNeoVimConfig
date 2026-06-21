@@ -14,7 +14,14 @@ return {
       logo = string.rep("\n", 8) .. logo .. "\n"
 
       local opts = {
-        notifier = { enabled = true },
+        notifier = {
+          enabled = true,
+          -- 默认 height.max=0.6 会折叠长提示（footer 显示 ↓ N lines），
+          -- 且 width.max=0.4 太窄导致长行换行膨胀。调高 height + 加宽 width，
+          -- 让多行提示（如 CC Notify 依赖缺失 WARN）完整展示不折叠。
+          width = { min = 40, max = 0.6 },
+          height = { min = 1, max = 0.9 },
+        },
         picker = {
           enabled = true,
           ui_select = true,
