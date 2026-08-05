@@ -49,7 +49,9 @@ return {
       },
 
       picker = "snacks",
-      background_scanning = true,
+      -- 关闭启动时的解决方案/msbuild 后台扫描（prewarm），减少打开 C# 文件的启动开销。
+      -- 若需要时手动执行 :Dotnet 相关命令即可触发。
+      background_scanning = false,
     })
 
     local map = function(lhs, rhs, desc)
