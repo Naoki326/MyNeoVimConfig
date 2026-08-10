@@ -2,6 +2,7 @@ return {
   "snacks.nvim",
   lazy = false,
   priority = 1000,
+  version = "*", -- 跟随最新稳定版
     opts = function()
       local logo = [[
          ██╗      █████╗ ███████╗██╗   ██╗██╗   ██╗██╗███╗   ███╗          Z

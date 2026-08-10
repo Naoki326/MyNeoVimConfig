@@ -17,8 +17,31 @@ return {
     -- stop 需要 force_stop。因此由上方 init 钩子跳过 plugin 脚本，
     -- 并在此手动注册其 autocmd（命令、sln 跟踪、source-generated 支持）。
 
+    -- 修复 LSP 无法启动：Crashdummyy/mason-registry 的 roslyn 包在 Windows 上
+    -- 生成的 bin 链接名是 roslyn.cmd，而 roslyn.nvim 的 utils.get_roslyn_lsp_path()
+    -- 只查找 roslyn-language-server(.cmd)（nuget dotnet tool 的名字），找不到时
+    -- 回退到裸名 "Microsoft.CodeAnalysis.LanguageServer"（不在 PATH），
+    -- 于是报 "Spawning language server ... failed"。这里显式指定 mason bin 链接。
+    local mason = vim.env.MASON or vim.fn.stdpath("data") .. "/mason"
+    local mason_roslyn = vim.fs.joinpath(mason, "bin", "roslyn.cmd")
+    local roslyn_cmd
+    if vim.fn.executable(mason_roslyn) == 1 then
+      -- mason 版 Roslyn 是 net10.0，宿主 dotnet 可能只有 8.0/10.0：
+      -- runtimeconfig 里 rollForward=Major，若默认解析选到旧 hostfxr 会报
+      -- "hostfxr_resolve_sdk2 ... SDK was not found"，所以强制 roll-forward。
+      roslyn_cmd = { "dotnet", "exec", "--roll-forward", "Major",
+        "--fx-version", "10.0.9",
+        vim.fs.joinpath(mason, "packages", "roslyn", "libexec",
+          "Microsoft.CodeAnalysis.LanguageServer.dll"),
+        "--stdio" }
+    else
+      -- 回退到插件默认解析（nuget dotnet tool 或 PATH）
+      roslyn_cmd = { require("roslyn.utils").get_roslyn_lsp_path(), "--stdio" }
+    end
+
     -- LSP 配置（cmd 等会由 nvim 从 roslyn.nvim 的 lsp/roslyn.lua 自动加载）
     vim.lsp.config("roslyn", {
+      cmd = roslyn_cmd,
       capabilities = require("blink.cmp").get_lsp_capabilities(),
       handlers = {
         ["activeProject/changed"] = function() end,

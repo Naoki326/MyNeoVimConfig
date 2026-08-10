@@ -12,6 +12,7 @@ end
 require("core.basic")
 require("core.autocmds")
 require("core.keymap")
+require("core.math-preview")
 require("core.lazy")
 
 -- DAP 初始化：在 VeryLazy 后统一执行，确保所有插件已加载

@@ -18,3 +18,9 @@ plugin/
 .claude/
 
 lazy-lock.json
+
+# pi 会话数据（本机私有）
+.pi-glla/
+
+# treesitter 编译的 parser 二进制（可重新生成）
+parser/

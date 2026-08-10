@@ -65,3 +65,8 @@ map("n", "<leader><tab><tab>", "<cmd>tabnew<cr>", { desc = "New Tab" })
 map("n", "<leader><tab>]", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" })
 map("n", "<leader><tab>[", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
+
+-- sessions (persisted.nvim)
+map("n", "<leader>qs", "<cmd>Persisted save<cr>", { desc = "Save Session" })
+map("n", "<leader>ql", "<cmd>Persisted load<cr>", { desc = "Load Session" })
+map("n", "<leader>qS", "<cmd>Persisted select<cr>", { desc = "Select Session" })

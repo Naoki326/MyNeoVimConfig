@@ -31,29 +31,33 @@ local function relpath(base, target)
     return vim.fn.fnamemodify(target, ":.")
 end
 
+-- 当前 buffer 的绝对路径；非普通文件 buffer（terminal/nofile 等）返回空串
 local function buf_abspath()
+    if vim.bo.buftype ~= "" then
+        return ""
+    end
     return vim.fn.expand("%:p")
 end
 
--- 确保 pi terminal 可见、拿到 job channel 与启动 cwd，用 build_text(pi_cwd)
--- 构造文本后 chansend 到 pi 的 TUI stdin（等效于在 pi 里打字），再聚焦终端进入
--- insert。不自动回车，留给你补 prompt 后提交。build_text 返回 nil 则不发送。
-local function send_to_pi(build_text)
+-- 确保 pi terminal 存在（必要时创建），返回 (term, pi_cwd)。
+-- 注意：get/show 会把焦点切到 pi terminal，调用方必须在此之前捕获 buffer 信息。
+local function get_pi()
     local snacks_term = require("snacks.terminal")
     local term = snacks_term.get(pi_cmd, vim.deepcopy(terminal_opts))
     if not term or not term.buf then
-        vim.notify("[pi] terminal 不可用", vim.log.levels.ERROR)
-        return
+        return nil, nil
     end
+    local pi_cwd = vim.b[term.buf].pi_cwd or vim.fn.getcwd()
+    return term, pi_cwd
+end
+
+-- 把文本注入 pi terminal 的 TUI stdin（等效于在 pi 里打字），再显示 + 聚焦 +
+-- 进入 insert。不自动回车，留给你补 prompt 后提交。
+local function feed_pi(term, text)
     term:show()
     local job_id = vim.b[term.buf].terminal_job_id or vim.bo[term.buf].channel
     if not job_id or job_id == 0 then
         vim.notify("[pi] terminal 无 job channel", vim.log.levels.ERROR)
-        return
-    end
-    local pi_cwd = vim.b[term.buf].pi_cwd or vim.fn.getcwd()
-    local text = build_text(pi_cwd)
-    if not text then
         return
     end
     vim.fn.chansend(job_id, text)
@@ -97,15 +101,19 @@ return {
         {
             "<leader>pb",
             function()
-                send_to_pi(function(cwd)
-                    local abs = buf_abspath()
-                    if abs == "" then
-                        vim.notify("[pi] 当前 buffer 无文件路径", vim.log.levels.WARN)
-                        return nil
-                    end
-                    -- @ 引用整个文件，pi 会把文件内容加载进上下文
-                    return "@" .. relpath(cwd, abs) .. " "
-                end)
+                -- 先捕获当前文件路径（必须在 get_pi/show 切走焦点之前）
+                local abs = buf_abspath()
+                if abs == "" then
+                    vim.notify("[pi] 当前 buffer 不是可发送的文件", vim.log.levels.WARN)
+                    return
+                end
+                local term, cwd = get_pi()
+                if not term then
+                    vim.notify("[pi] terminal 不可用", vim.log.levels.ERROR)
+                    return
+                end
+                -- @ 引用整个文件，pi 会把文件内容加载进上下文
+                feed_pi(term, "@" .. relpath(cwd, abs) .. " ")
             end,
             desc = "Send buffer to Pi",
             mode = "n",
@@ -113,21 +121,25 @@ return {
         {
             "<leader>ps",
             function()
-                send_to_pi(function(cwd)
-                    local abs = buf_abspath()
-                    if abs == "" then
-                        vim.notify("[pi] 当前 buffer 无文件路径", vim.log.levels.WARN)
-                        return nil
-                    end
-                    local path = relpath(cwd, abs)
-                    local s_line = vim.fn.line("'<")
-                    local e_line = vim.fn.line("'>")
-                    -- 单行 文件:行，多行 文件:起-止
-                    local ref = (s_line == e_line)
-                        and (path .. ":" .. s_line)
-                        or (path .. ":" .. s_line .. "-" .. e_line)
-                    return ref .. " "
-                end)
+                -- 先捕获当前文件路径与选区行号（必须在 get_pi/show 切走焦点之前）
+                local abs = buf_abspath()
+                local s_line = vim.fn.line("'<")
+                local e_line = vim.fn.line("'>")
+                if abs == "" then
+                    vim.notify("[pi] 当前 buffer 不是可发送的文件", vim.log.levels.WARN)
+                    return
+                end
+                local term, cwd = get_pi()
+                if not term then
+                    vim.notify("[pi] terminal 不可用", vim.log.levels.ERROR)
+                    return
+                end
+                local path = relpath(cwd, abs)
+                -- 单行 文件:行，多行 文件:起-止
+                local ref = (s_line == e_line)
+                    and (path .. ":" .. s_line)
+                    or (path .. ":" .. s_line .. "-" .. e_line)
+                feed_pi(term, ref .. " ")
             end,
             desc = "Send selection range to Pi",
             mode = "v",
