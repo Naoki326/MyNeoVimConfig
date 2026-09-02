@@ -63,6 +63,15 @@ local function get_inline_node_at_cursor(row, col)
   -- 直接退化用 inline parser 找光标处节点（表格内容由 injections 单独解析）
   local inline_cursor_node = inline_root:named_descendant_for_range(row, col, row, col)
   if inline_node then
+    -- 防御：markdown_inline parser 会把代码围栏结束行（如 ```）之后的正文
+    -- 误并进一个跨多行的巨型 code_span（围栏干扰 bug）。此时 inline 节点
+    -- 的 range 远大于光标所在段落，链接信息已丢失，需要单独解析当前行。
+    if inline_cursor_node then
+      local sr, sc, er, ec = inline_cursor_node:range()
+      if (sr < row and er > row) or inline_cursor_node:type() == "code_span" and (er - sr) > 0 then
+        return nil
+      end
+    end
     return inline_cursor_node
   end
   -- 找不到 inline 节点时，只要光标处是链接相关节点就直接返回
@@ -93,6 +102,25 @@ local function get_link_destination()
   local col = cursor[2]
 
   local node_at_cursor = get_inline_node_at_cursor(row, col)
+  -- 围栏干扰防御：inline parser 全局解析失败时（巨型 code_span 吞掉链接），
+  -- 回退为单独解析光标所在行文本，链接节点即可正常解析。
+  -- 注意：get_string_parser 返回的节点 range 基于行文本字符串（行内 0-indexed），
+  -- 不能直接用 get_node_text(node, bufnr) 读 buffer，需从行文本里截取。
+  local line_fallback = nil -- { node = <TSNode>, text = <string> }
+  if not node_at_cursor then
+    local line_text = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1]
+    if line_text then
+      local ok_p, line_parser = pcall(vim.treesitter.get_string_parser, line_text, "markdown_inline")
+      if ok_p then
+        local line_root = line_parser:parse()[1]:root()
+        local line_node = line_root:named_descendant_for_range(0, col, 0, col)
+        if line_node and line_node:type() ~= "code_span" then
+          node_at_cursor = line_node
+          line_fallback = { node = line_node, text = line_text }
+        end
+      end
+    end
+  end
   if not node_at_cursor then
     return
   end
@@ -100,14 +128,24 @@ local function get_link_destination()
   local parent_node = node_at_cursor and node_at_cursor:parent()
   if not (node_at_cursor and parent_node) then
     return
-  elseif node_at_cursor:type() == "link_destination" then
-    return vim.split(treesitter.get_node_text(node_at_cursor, bufnr), "\n")[1]
+  end
+  -- 从节点取文本：line_fallback 时节点基于行字符串解析，需从行文本截取；
+  -- 否则从 buffer 读取。
+  local function node_text(node)
+    if line_fallback then
+      local sr, sc, er, ec = node:range()
+      return line_fallback.text:sub(sc + 1, ec)
+    end
+    return treesitter.get_node_text(node, bufnr)
+  end
+  if node_at_cursor:type() == "link_destination" then
+    return vim.split(node_text(node_at_cursor), "\n")[1]
   elseif node_at_cursor:type() == "shortcut_link" then
-    local link_text = vim.split(treesitter.get_node_text(node_at_cursor, bufnr), "\n")[1]
+    local link_text = vim.split(node_text(node_at_cursor), "\n")[1]
     return get_reference_link_destination(link_text)
   elseif node_at_cursor:type() == "link_text" then
     if node_at_cursor:parent():type() == "shortcut_link" then
-      local link_text = vim.split(treesitter.get_node_text(node_at_cursor:parent(), bufnr), "\n")[1]
+      local link_text = vim.split(node_text(node_at_cursor:parent()), "\n")[1]
       return get_reference_link_destination(link_text)
     end
     local parent = node_at_cursor:parent()
@@ -122,9 +160,9 @@ local function get_link_destination()
       end
     end
     if next_node and next_node:type() == "link_destination" then
-      return vim.split(treesitter.get_node_text(next_node, bufnr), "\n")[1]
+      return vim.split(node_text(next_node), "\n")[1]
     elseif next_node and next_node:type() == "link_label" then
-      local link_label = vim.split(treesitter.get_node_text(next_node, bufnr), "\n")[1]
+      local link_label = vim.split(node_text(next_node), "\n")[1]
       return get_reference_link_destination(link_label)
     end
   elseif node_at_cursor:type() == "link_reference_definition" or node_at_cursor:type() == "inline_link" then
@@ -134,7 +172,7 @@ local function get_link_destination()
     end
     for _, node in pairs(child_nodes) do
       if node:type() == "link_destination" then
-        return vim.split(treesitter.get_node_text(node, bufnr), "\n")[1]
+        return vim.split(node_text(node), "\n")[1]
       end
     end
   elseif node_at_cursor:type() == "full_reference_link" then
@@ -144,15 +182,15 @@ local function get_link_destination()
     end
     for _, node in pairs(child_nodes) do
       if node:type() == "link_label" then
-        local link_label = vim.split(treesitter.get_node_text(node, bufnr), "\n")[1]
+        local link_label = vim.split(node_text(node), "\n")[1]
         return get_reference_link_destination(link_label)
       end
     end
   elseif node_at_cursor:type() == "link_label" then
-    local link_label = vim.split(treesitter.get_node_text(node_at_cursor, bufnr), "\n")[1]
+    local link_label = vim.split(node_text(node_at_cursor), "\n")[1]
     return get_reference_link_destination(link_label)
   elseif node_at_cursor:type() == "uri_autolink" then
-    local link_label = vim.split(treesitter.get_node_text(node_at_cursor, 0), "\n")[1]
+    local link_label = vim.split(node_text(node_at_cursor), "\n")[1]
     return string.gsub(link_label, "^<(.-)>$", "%1")
   else
     return
